@@ -11,10 +11,19 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = mp3_tag_editor
 TEMPLATE = app
 
+CONFIG += c++11
+
 
 SOURCES += main.cpp\
-        window.cpp
+		window.cpp \
+		tab_file.cpp
 
-HEADERS  += window.h
+HEADERS  += window.h \
+	External/inc/genre.h \
+	External/inc/id3v1.h \
+	External/inc/id3v2.h
 
 FORMS    += window.ui
+
+#LIBS += -liconv
+LIBS += $$PWD/External/lib/id3v2.a
