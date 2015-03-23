@@ -16,14 +16,17 @@ CONFIG += c++11
 
 SOURCES += main.cpp\
 		window.cpp \
-		tab_file.cpp
+		tab_file.cpp \
+		textedit.cpp
 
 HEADERS  += window.h \
 	External/inc/genre.h \
 	External/inc/id3v1.h \
-	External/inc/id3v2.h
+	External/inc/id3v2.h \
+	textedit.h
 
 FORMS    += window.ui
 
 #LIBS += -liconv
 LIBS += $$PWD/External/lib/id3v2.a
+
