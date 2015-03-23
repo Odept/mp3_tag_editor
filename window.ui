@@ -67,7 +67,7 @@
           <string>Track #</string>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editTrack">
+        <widget class="TextEdit" name="editTrack">
          <property name="geometry">
           <rect>
            <x>104</x>
@@ -110,7 +110,7 @@
           <string>Disc #</string>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editDisc">
+        <widget class="TextEdit" name="editDisc">
          <property name="geometry">
           <rect>
            <x>224</x>
@@ -153,7 +153,7 @@
           <string>BPM</string>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editBPM">
+        <widget class="TextEdit" name="editBPM">
          <property name="geometry">
           <rect>
            <x>400</x>
@@ -196,7 +196,7 @@
           <string>Title</string>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editTitle">
+        <widget class="TextEdit" name="editTitle">
          <property name="geometry">
           <rect>
            <x>104</x>
@@ -226,7 +226,7 @@
           <string/>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editArtist">
+        <widget class="TextEdit" name="editArtist">
          <property name="geometry">
           <rect>
            <x>104</x>
@@ -256,7 +256,7 @@
           <string/>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editAlbum">
+        <widget class="TextEdit" name="editAlbum">
          <property name="geometry">
           <rect>
            <x>104</x>
@@ -286,7 +286,7 @@
           <string/>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editAArtist">
+        <widget class="TextEdit" name="editAArtist">
          <property name="geometry">
           <rect>
            <x>104</x>
@@ -391,7 +391,7 @@
           <string>Year</string>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editYear">
+        <widget class="TextEdit" name="editYear">
          <property name="geometry">
           <rect>
            <x>104</x>
@@ -434,7 +434,7 @@
           <string>Genre</string>
          </property>
         </widget>
-        <widget class="QComboBox" name="comboGenre">
+        <widget class="GenreBox" name="comboGenre">
          <property name="geometry">
           <rect>
            <x>276</x>
@@ -450,7 +450,7 @@
           <number>-1</number>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editComment">
+        <widget class="TextEdit" name="editComment">
          <property name="geometry">
           <rect>
            <x>104</x>
@@ -493,7 +493,7 @@
           <string>Comment</string>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editAArtist_2">
+        <widget class="TextEdit" name="editPublisher">
          <property name="geometry">
           <rect>
            <x>104</x>
@@ -536,7 +536,7 @@
           <string>Publisher</string>
          </property>
         </widget>
-        <widget class="QTextEdit" name="editComposer">
+        <widget class="TextEdit" name="editComposer">
          <property name="geometry">
           <rect>
            <x>104</x>
@@ -635,7 +635,7 @@
      <x>0</x>
      <y>0</y>
      <width>845</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -687,6 +687,18 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>TextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>textedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GenreBox</class>
+   <extends>QComboBox</extends>
+   <header>textedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

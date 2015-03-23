@@ -13,6 +13,7 @@ Window::Window(QWidget *parent) :
     QStringList tags( QList<QString>() << "All" << "ID3v1" << "ID3v2" );
     ui->comboTag->addItems(tags);
 
+    ui->comboGenre->connectLabel(ui->labelBoxGenre);
     for(unsigned int i = 0;; i++)
     {
         const char* szGenre = CGenre::get(i);

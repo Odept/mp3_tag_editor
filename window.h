@@ -1,10 +1,11 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef __WINDOW_H__
+#define __WINDOW_H__
 
 #include <QMainWindow>
 
 namespace Ui {
 class Window;
+class TextEdit;
 }
 
 class Window : public QMainWindow
@@ -15,11 +16,8 @@ public:
     explicit Window(QWidget *parent = 0);
     ~Window();
 
-private slots:
-    void on_comboGenre_editTextChanged(const QString& arg1);
-
 private:
     Ui::Window *ui;
 };
 
-#endif // WINDOW_H
+#endif // __WINDOW_H__
