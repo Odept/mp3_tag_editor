@@ -1,5 +1,6 @@
 #include "window.h"
 #include "ui_window.h"
+#include "job_file.h"
 
 #include <QDragEnterEvent>
 #include <QMimeData>
@@ -11,7 +12,8 @@
 
 Window::Window(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::Window)
+	ui(new Ui::Window),
+	m_job(NULL)
 {
 	ui->setupUi(this);
 
@@ -31,6 +33,7 @@ Window::Window(QWidget *parent) :
 
 Window::~Window()
 {
+	delete m_job;
 	delete ui;
 }
 
@@ -58,17 +61,21 @@ void Window::dragEnterEvent(QDragEnterEvent* pEvent)
 
 void Window::dropEvent(QDropEvent* pEvent)
 {
-	/*if(m_job && !m_job.close())
-		return;
-	*/
+	if(m_job)
+	{
+		//if( !question )
+		//	return;
+		delete m_job;
+		m_job = NULL;
+	}
+
 	const QList<QUrl> urls = pEvent->mimeData()->urls();
 	const int nURLs = urls.size();
 	if(nURLs == 1)
 	{
 		ui->tabsMode->setCurrentIndex(0);
 		QFileInfo fi(urls[0].toLocalFile());
-		//qDebug() << QString("Single mode: %1").arg(fi.absoluteFilePath());
-		//m_job = QJobSingle(fi.absoluteFilePath());
+		m_job = CJobSingle::create(*this, fi.absoluteFilePath());
 	}
 	else
 	{
@@ -84,6 +91,6 @@ void Window::dropEvent(QDropEvent* pEvent)
 			files.append(fi.absoluteFilePath());
 		}
 		//if(files.size())
-		//  m_job = QJobBatch(files);
+		//  m_job = QJobBatch(*this, files);
 	}
 }

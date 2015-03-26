@@ -15,15 +15,16 @@ CONFIG += c++11
 
 
 SOURCES += main.cpp\
-		window.cpp \
-		tab_file.cpp \
-		textedit.cpp
+	window.cpp \
+	textedit.cpp \
+	job_file.cpp
 
-HEADERS  += window.h \
+HEADERS += window.h \
 	External/inc/genre.h \
 	External/inc/id3v1.h \
 	External/inc/id3v2.h \
-	textedit.h
+	textedit.h \
+	job_file.h
 
 FORMS    += window.ui
 

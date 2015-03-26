@@ -9,6 +9,8 @@ namespace Ui
 	class Window;
 	class TextEdit;
 }
+class CJob;
+
 
 class Window : public QMainWindow
 {
@@ -24,6 +26,8 @@ protected:
 
 private:
 	Ui::Window *ui;
+
+	CJob* m_job;
 };
 
 #endif // __WINDOW_H__
