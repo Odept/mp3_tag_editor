@@ -4,7 +4,7 @@
 void TextEdit::onTextChange()
 {
     QPalette p = palette();
-    p.setColor(QPalette::Base, QColor(255, 216, 0, 32));
+    p.setColor(QPalette::Base, QColor(255, 255, 0, 128));
     setPalette(p);
 }
 
