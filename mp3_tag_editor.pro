@@ -29,5 +29,5 @@ HEADERS += window.h \
 FORMS    += window.ui
 
 #LIBS += -liconv
-LIBS += $$PWD/External/lib/id3v2.a
-
+LIBS += $$PWD/External/lib/id3v1.a \
+	$$PWD/External/lib/id3v2.a
