@@ -9,6 +9,14 @@ void TextEdit::onTextChange()
 }
 
 // ============================================================================
+GenreBox::GenreBox(QWidget* parent):
+	QComboBox(parent)
+{
+	connect((QComboBox*)this, SIGNAL(editTextChanged(const QString&)),
+						this, SLOT  (onTextChange   (const QString&)));
+}
+
+
 void GenreBox::onTextChange(const QString& str)
 {
     if(m_label.isNull())
@@ -19,4 +27,12 @@ void GenreBox::onTextChange(const QString& str)
         m_label->clear();
     else
         m_label->setText( QString("(%1)").arg(i) );
+}
+
+// ============================================================================
+TagBox::TagBox(QWidget* parent):
+	QComboBox(parent)
+{
+	QStringList tags( QList<QString>() << "Combined" << "ID3v1" << "ID3v2" );
+	addItems(tags);
 }
