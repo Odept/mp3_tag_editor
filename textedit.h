@@ -31,14 +31,14 @@ class GenreBox : public QComboBox
 
 public:
 	explicit GenreBox(QWidget* parent = 0);
-
-    void connectLabel(QLabel* label) { m_label = QSharedPointer<QLabel>(label); }
+	void setLabel(QLabel* f_label) { m_label = f_label; }
 
 private slots:
     void onTextChange(const QString& str);
+	void onSelectionChange(int f_index);
 
 private:
-    QSharedPointer<QLabel> m_label;
+	QLabel* m_label;
 };
 
 

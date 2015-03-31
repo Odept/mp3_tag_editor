@@ -17,7 +17,7 @@ Window::Window(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	ui->comboGenre->connectLabel(ui->labelBoxGenre);
+	ui->comboGenre->setLabel(ui->labelBoxGenre);
 	for(unsigned int i = 0;; i++)
 	{
 		const char* szGenre = CGenre::get(i);

@@ -33,19 +33,23 @@ GenreBox::GenreBox(QWidget* parent):
 {
 	connect((QComboBox*)this, SIGNAL(editTextChanged(const QString&)),
 						this, SLOT  (onTextChange   (const QString&)));
+	connect((QComboBox*)this, SIGNAL(currentIndexChanged(int)),
+						this, SLOT  (onSelectionChange  (int)));
 }
 
 
 void GenreBox::onTextChange(const QString& str)
 {
-    if(m_label.isNull())
-        return;
-
     int i = findText(str);
     if(i == -1)
         m_label->clear();
     else
-        m_label->setText( QString("(%1)").arg(i) );
+		onSelectionChange(i);
+}
+
+void GenreBox::onSelectionChange(int f_index)
+{
+	m_label->setText( QString("(%1)").arg(f_index) );
 }
 
 // ============================================================================
