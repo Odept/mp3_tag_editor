@@ -51,11 +51,3 @@ void GenreBox::onSelectionChange(int f_index)
 {
 	m_label->setText( QString("(%1)").arg(f_index) );
 }
-
-// ============================================================================
-TagBox::TagBox(QWidget* parent):
-	QComboBox(parent)
-{
-	QStringList tags( QList<QString>() << "Combined" << "ID3v1" << "ID3v2" );
-	addItems(tags);
-}

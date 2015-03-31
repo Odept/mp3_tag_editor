@@ -24,8 +24,14 @@ Window::Window(QWidget *parent) :
 		if(!*szGenre)
 			break;
 		QString genre(szGenre);
+		//qDebug() << QString("%1: %2").arg(i).arg(genre);
 		ui->comboGenre->addItem(genre);
 	}
+
+	QStringList tags( QList<QString>() << "Combined" << "ID3v1" << "ID3v2" );
+	ui->comboTag->addItems(tags);
+	connect(ui->comboTag, SIGNAL(currentIndexChanged (int)),
+					this, SLOT  (onTagSelectionChange(int)));
 }
 
 Window::~Window()

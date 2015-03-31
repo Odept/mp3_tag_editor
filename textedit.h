@@ -41,21 +41,4 @@ private:
 	QLabel* m_label;
 };
 
-
-class TagBox : public QComboBox
-{
-	Q_OBJECT
-
-public:
-	explicit TagBox(QWidget* parent = 0);
-
-	uint currentTagVersion() const { return currentIndex(); }
-
-//private slots:
-//	void onSelectionChange(int f_index) { m_index = f_index; }
-
-private:
-	uint m_index;
-};
-
 #endif //__TEXTEDIT_H__

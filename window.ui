@@ -358,7 +358,7 @@
           <string>Album Artist</string>
          </property>
         </widget>
-        <widget class="TagBox" name="comboTag">
+        <widget class="QComboBox" name="comboTag">
          <property name="geometry">
           <rect>
            <x>102</x>
@@ -427,9 +427,9 @@
         <widget class="QLabel" name="labelGenre">
          <property name="geometry">
           <rect>
-           <x>236</x>
+           <x>228</x>
            <y>192</y>
-           <width>41</width>
+           <width>45</width>
            <height>25</height>
           </rect>
          </property>
@@ -529,9 +529,9 @@
         <widget class="QLabel" name="labelPublisher">
          <property name="geometry">
           <rect>
-           <x>36</x>
+           <x>32</x>
            <y>288</y>
-           <width>65</width>
+           <width>69</width>
            <height>25</height>
           </rect>
          </property>
@@ -572,9 +572,9 @@
         <widget class="QLabel" name="labelComposer">
          <property name="geometry">
           <rect>
-           <x>36</x>
+           <x>28</x>
            <y>316</y>
-           <width>65</width>
+           <width>73</width>
            <height>25</height>
           </rect>
          </property>
@@ -698,11 +698,6 @@
   </customwidget>
   <customwidget>
    <class>GenreBox</class>
-   <extends>QComboBox</extends>
-   <header>textedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>TagBox</class>
    <extends>QComboBox</extends>
    <header>textedit.h</header>
   </customwidget>
