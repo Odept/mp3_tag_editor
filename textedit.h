@@ -11,14 +11,17 @@ class TextEdit : public QTextEdit
     Q_OBJECT
 
 public:
-    explicit TextEdit(QWidget* parent = 0):
-        QTextEdit(parent)
-    {
-        connect((QTextEdit*)this, SIGNAL(textChanged()), this, SLOT(onTextChange()));
-    }
+	explicit TextEdit(QWidget* parent = 0);
+
+	void trackChanges(bool f_track);
 
 private slots:
-    void onTextChange();
+	void onTextChange();
+
+private:
+	QPalette m_palDefault;
+	QPalette m_palHightlight;
+	bool m_highlight;
 };
 
 

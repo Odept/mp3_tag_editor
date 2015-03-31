@@ -1,11 +1,30 @@
 #include "textedit.h"
+#include "ui_window.h"
 
+
+TextEdit::TextEdit(QWidget* parent):
+	QTextEdit(parent),
+	m_palDefault(palette()),
+	m_palHightlight(m_palDefault),
+	m_highlight(false)
+{
+	m_palHightlight.setColor(QPalette::Base, QColor(255, 255, 0, 128));
+
+	connect((QTextEdit*)this, SIGNAL(textChanged()), this, SLOT(onTextChange()));
+}
+
+
+void TextEdit::trackChanges(bool f_track)
+{
+	m_highlight = f_track;
+	setPalette(m_palDefault);
+}
 
 void TextEdit::onTextChange()
 {
-    QPalette p = palette();
-    p.setColor(QPalette::Base, QColor(255, 255, 0, 128));
-    setPalette(p);
+	if(!m_highlight)
+		return;
+	setPalette(m_palHightlight);
 }
 
 // ============================================================================
