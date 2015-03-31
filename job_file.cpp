@@ -51,89 +51,22 @@ bool CJob::init(QWidget& f_parent)
 CJob::~CJob() {}
 
 // ============================================================================
-CJobSingle* CJobSingle::create(Ui::Window& f_ui, const QString& f_file)
+CJobSingle* CJobSingle::create(QWidget& f_parent, const QString& f_file)
 {
-	//qDebug() << QString("Single mode: %1").arg(f_file);
-	CJobSingle* pJob = new CJobSingle(f_ui, f_file);
+	CJobSingle* pJob = new CJobSingle(f_file);
 
-	if( !CJob::init(*f_ui.centralWidget->parentWidget(), pJob) )
+	if( pJob->init(f_parent) )
+		return pJob;
+	else
 	{
 		delete pJob;
 		return NULL;
 	}
 
-	// Init fields
-	pJob->updateUI();
 
-	return pJob;
 }
 
 
 void CJobSingle::updateUI() const
 {
-	// Clear ID3v1 fields
-	m_ui.editTrack->clear();
-	m_ui.editTitle->clear();
-	m_ui.editArtist->clear();
-	m_ui.editAlbum->clear();
-	m_ui.editYear->clear();
-	m_ui.editComment->clear();
-	m_ui.comboGenre->clear();
-
-	// Clear ID3v2 fields
-	m_ui.editDisc->clear();
-	m_ui.editBPM->clear();
-	m_ui.editAArtist->clear();
-	m_ui.editComposer->clear();
-	m_ui.editPublisher->clear();
-
-	// Reset visibility & editability
-	bool isTabV2 = (m_ui.comboTag->currentTagVersion() != 1);
-
-	m_ui.comboGenre->setEditable(isTabV2);
-
-	m_ui.editDisc->setVisible(isTabV2);
-	m_ui.editBPM->setVisible(isTabV2);
-	m_ui.editAArtist->setVisible(isTabV2);
-	m_ui.editComposer->setVisible(isTabV2);
-	m_ui.editPublisher->setVisible(isTabV2);
-
-	// Init fields
-	if(isTabV2)
-	{
-		m_ui.editTrack->	setText( QString::fromStdString(m_tag2->getTrack())       );
-		m_ui.editDisc->		setText( QString::fromStdString(m_tag2->getDisc())        );
-		m_ui.editBPM->		setText( QString::fromStdString(m_tag2->getBPM())         );
-
-		m_ui.editTitle->	setText( QString::fromStdString(m_tag2->getTitle())       );
-		m_ui.editArtist->	setText( QString::fromStdString(m_tag2->getArtist())      );
-		m_ui.editAlbum->	setText( QString::fromStdString(m_tag2->getAlbum())       );
-		m_ui.editYear->		setText( QString::fromStdString(m_tag2->getYear())        );
-		m_ui.editAArtist->	setText( QString::fromStdString(m_tag2->getAlbumArtist()) );
-		m_ui.editComment->	setText( QString::fromStdString(m_tag2->getComment())     );
-
-		//bool				isExtendedGenre() )
-		//m_ui.comboGenre->setText( getGenre()
-		//const std::string&	getGenreEx()
-		//int					getGenreIndex()
-
-		m_ui.editComposer->	setText( QString::fromStdString(m_tag2->getComposer())  );
-		m_ui.editPublisher->setText( QString::fromStdString(m_tag2->getPublisher()) );
-		//m_ui.editOrigArtist->setText( QString::fromStdString(m_tag2->getOrigArtist()) );
-		//m_ui.editCopyright->setText( QString::fromStdString(m_tag2->getCopyright()) );
-		//const std::string&	getURL()
-		//m_ui.editEncoded->setText( QString::fromStdString(m_tag2->getEncoded()) );
-	}
-	else
-	{
-		if(m_tag->isV11())
-			m_ui.editTrack->setText( QString::number(m_tag->getTrack()) );
-		m_ui.editTitle->	setText( m_tag->getTitle()                  );
-		m_ui.editArtist->	setText( m_tag->getArtist()                 );
-		m_ui.editAlbum->	setText( m_tag->getAlbum()                  );
-		m_ui.editYear->		setText( QString::number(m_tag->getYear())  );
-		m_ui.editComment->	setText( m_tag->getComment()                );
-
-		m_ui.comboGenre->setCurrentIndex( m_tag->getGenreIndex() );
-	}
 }

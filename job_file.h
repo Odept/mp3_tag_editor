@@ -12,17 +12,6 @@ public:
 	virtual ~CJob();
 
 protected:
-	static CJob* init(QWidget& f_parent, CJob* f_pJob)
-	{
-		if(f_pJob->init(f_parent))
-			return f_pJob;
-		else
-		{
-			delete f_pJob;
-			return NULL;
-		}
-	}
-
 	CJob(const QString& f_file):
 		m_file(f_file)
 	{}
@@ -41,18 +30,14 @@ private:
 class CJobSingle : public CJob
 {
 public:
-	static CJobSingle* create(Ui::Window& f_ui, const QString& f_file);
+	static CJobSingle* create(QWidget& f_parent, const QString& f_file);
 
 private:
-	CJobSingle(Ui::Window& f_ui, const QString& f_file):
-		CJob(f_file),
-		m_ui(f_ui)
+	CJobSingle(const QString& f_file):
+		CJob(f_file)
 	{}
 
 	void updateUI() const;
-
-private:
-	Ui::Window& m_ui;
 };
 
 #endif // __JOB_FILE__

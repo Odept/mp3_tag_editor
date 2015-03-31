@@ -72,7 +72,7 @@ void Window::dropEvent(QDropEvent* pEvent)
 	{
 		ui->tabsMode->setCurrentIndex(0);
 		QFileInfo fi(urls[0].toLocalFile());
-		m_job = CJobSingle::create(*ui, fi.absoluteFilePath());
+		m_job = CJobSingle::create(*this, fi.absoluteFilePath());
 	}
 	else
 	{
