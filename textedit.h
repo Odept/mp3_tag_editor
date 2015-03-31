@@ -6,38 +6,64 @@
 #include <QLabel>
 
 
+class ChangeHighlighter : public QObject
+{
+	Q_OBJECT
+
+public:
+	explicit ChangeHighlighter(QWidget* parent = 0);
+
+	void track(bool f_track);
+
+public slots:
+	void onChange();
+
+private:
+	ChangeHighlighter();
+
+private:
+	QWidget* m_parent;
+
+//	QPalette m_palDefault;
+//	QPalette m_palHightlight;
+	QFont m_fontDefault;
+	QFont m_fontHighlight;
+
+	bool m_highlight;
+	bool m_changed;
+};
+
+
 class TextEdit : public QTextEdit
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
 	explicit TextEdit(QWidget* parent = 0);
 
-	void trackChanges(bool f_track);
-
-private slots:
-	void onTextChange();
+	void trackChanges(bool f_track) { m_tracker.track(f_track); }
 
 private:
-	QPalette m_palDefault;
-	QPalette m_palHightlight;
-	bool m_highlight;
+	ChangeHighlighter m_tracker;
 };
 
 
 class GenreBox : public QComboBox
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
 	explicit GenreBox(QWidget* parent = 0);
 	void setLabel(QLabel* f_label) { m_label = f_label; }
 
+	void trackChanges(bool f_track) { m_tracker.track(f_track); }
+
 private slots:
-    void onTextChange(const QString& str);
+	void onTextChange(const QString& str);
 	void onSelectionChange(int f_index);
 
 private:
+	ChangeHighlighter m_tracker;
 	QLabel* m_label;
 };
 

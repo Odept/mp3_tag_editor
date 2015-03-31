@@ -5,7 +5,6 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QFileInfo>
-#include <QDebug>
 
 #include "External/inc/genre.h"
 
@@ -128,6 +127,7 @@ void Window::resetFields(bool f_enabled)
 	resetField(*ui->editComment, f_enabled);
 
 	ui->comboGenre->setEnabled(f_enabled);
+	ui->comboGenre->trackChanges(false);
 	//ui->comboGenre->clear();
 
 	// Clear ID3v2 fields

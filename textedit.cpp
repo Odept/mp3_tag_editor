@@ -2,48 +2,68 @@
 #include "ui_window.h"
 
 
+ChangeHighlighter::ChangeHighlighter(QWidget* parent):
+	m_parent(parent),
+//	m_palDefault(m_parent->palette()),
+//	m_palHightlight(m_palDefault),
+	m_fontDefault(m_parent->font()),
+	m_fontHighlight(m_fontDefault),
+	m_highlight(false),
+	m_changed(false)
+{
+	//m_palHightlight.setColor(QPalette::Text, QColor(255, 255, 0, 128));
+	m_fontHighlight.setBold(true);
+}
+
+void ChangeHighlighter::track(bool f_track)
+{
+	m_changed = false;
+	m_highlight = f_track;
+	//m_parent->setPalette(m_palDefault);
+	m_parent->setFont(m_fontDefault);
+}
+
+void ChangeHighlighter::onChange()
+{
+	if(!m_highlight || m_changed)
+		return;
+	//m_parent->setPalette(m_palHightlight);
+	m_parent->setFont(m_fontHighlight);
+	m_changed = true;
+}
+
+// ============================================================================
 TextEdit::TextEdit(QWidget* parent):
 	QTextEdit(parent),
-	m_palDefault(palette()),
-	m_palHightlight(m_palDefault),
-	m_highlight(false)
+	m_tracker(this)
 {
-	m_palHightlight.setColor(QPalette::Base, QColor(255, 255, 0, 128));
-
-	connect((QTextEdit*)this, SIGNAL(textChanged()), this, SLOT(onTextChange()));
-}
-
-
-void TextEdit::trackChanges(bool f_track)
-{
-	m_highlight = f_track;
-	setPalette(m_palDefault);
-}
-
-void TextEdit::onTextChange()
-{
-	if(!m_highlight)
-		return;
-	setPalette(m_palHightlight);
+	connect((QTextEdit*)this, SIGNAL(textChanged()), &m_tracker, SLOT(onChange()));
 }
 
 // ============================================================================
 GenreBox::GenreBox(QWidget* parent):
-	QComboBox(parent)
+	QComboBox(parent),
+	m_tracker((QComboBox*)this)
 {
+	// Label actions
 	connect((QComboBox*)this, SIGNAL(editTextChanged(const QString&)),
 						this, SLOT  (onTextChange   (const QString&)));
 	connect((QComboBox*)this, SIGNAL(currentIndexChanged(int)),
 						this, SLOT  (onSelectionChange  (int)));
+	// Text change tracker actions
+	connect((QComboBox*)this, SIGNAL(editTextChanged(const QString&)),
+				  &m_tracker, SLOT  (onChange       ()));
+	connect((QComboBox*)this, SIGNAL(currentIndexChanged(int)),
+				  &m_tracker, SLOT  (onChange           ()));
 }
 
 
 void GenreBox::onTextChange(const QString& str)
 {
-    int i = findText(str);
-    if(i == -1)
-        m_label->clear();
-    else
+	int i = findText(str);
+	if(i == -1)
+		m_label->clear();
+	else
 		onSelectionChange(i);
 }
 

@@ -82,6 +82,7 @@ void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 	updateControl(*f_ui.editComment, QString        (m_tag->getComment()) );
 
 	f_ui.comboGenre->setCurrentIndex( m_tag->getGenreIndex() );
+	f_ui.comboGenre->trackChanges(true);
 }
 
 void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
@@ -101,6 +102,7 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 	//m_ui.comboGenre->setText( getGenre()
 	//const std::string&	getGenreEx()
 	//int					getGenreIndex()
+	f_ui.comboGenre->trackChanges(true);
 
 	updateControl(*f_ui.editComposer , m_tag2->getComposer());
 	updateControl(*f_ui.editPublisher, m_tag2->getPublisher());
