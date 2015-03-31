@@ -7,9 +7,9 @@
 namespace Ui
 {
 	class Window;
-	class TextEdit;
 }
-class CJob;
+class TextEdit;
+class CJobSingle;
 
 
 class Window : public QMainWindow
@@ -25,9 +25,16 @@ protected:
 	void dropEvent(QDropEvent* pEvent);
 
 private:
+	void resetField(TextEdit& f_control, bool f_enabled);
+	void resetFields(bool f_enabled = false);
+
+private slots:
+	void onTagSelectionChange(int f_index);
+
+private:
 	Ui::Window *ui;
 
-	CJob* m_job;
+	CJobSingle* m_job;
 };
 
 #endif // __WINDOW_H__

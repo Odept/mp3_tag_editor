@@ -62,11 +62,50 @@ CJobSingle* CJobSingle::create(QWidget& f_parent, const QString& f_file)
 		delete pJob;
 		return NULL;
 	}
-
-
 }
 
 
-void CJobSingle::updateUI() const
+void CJobSingle::updateControl(TextEdit& f_control, const QString& f_str) const
 {
+	f_control.setText(f_str);
+	f_control.trackChanges(true);
+}
+
+void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
+{
+	updateControl(*f_ui.editTrack,
+				  m_tag->isV11() ? QString::number(m_tag->getTrack()) : QString(""));
+	updateControl(*f_ui.editTitle  , QString        (m_tag->getTitle())   );
+	updateControl(*f_ui.editArtist , QString        (m_tag->getArtist())  );
+	updateControl(*f_ui.editAlbum  , QString        (m_tag->getAlbum())   );
+	updateControl(*f_ui.editYear   , QString::number(m_tag->getYear())    );
+	updateControl(*f_ui.editComment, QString        (m_tag->getComment()) );
+
+	f_ui.comboGenre->setCurrentIndex( m_tag->getGenreIndex() );
+}
+
+void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
+{
+	updateControl(*f_ui.editTrack, m_tag2->getTrack());
+	updateControl(*f_ui.editDisc , m_tag2->getDisc() );
+	updateControl(*f_ui.editBPM  , m_tag2->getBPM()  );
+
+	updateControl(*f_ui.editTitle  , m_tag2->getTitle()      );
+	updateControl(*f_ui.editArtist , m_tag2->getArtist()     );
+	updateControl(*f_ui.editAlbum  , m_tag2->getAlbum()      );
+	updateControl(*f_ui.editYear   , m_tag2->getYear()       );
+	updateControl(*f_ui.editAArtist, m_tag2->getAlbumArtist());
+	updateControl(*f_ui.editComment, m_tag2->getComment()    );
+
+	//bool				isExtendedGenre() )
+	//m_ui.comboGenre->setText( getGenre()
+	//const std::string&	getGenreEx()
+	//int					getGenreIndex()
+
+	updateControl(*f_ui.editComposer , m_tag2->getComposer());
+	updateControl(*f_ui.editPublisher, m_tag2->getPublisher());
+	//m_ui.editOrigArtist->setText( QString::fromStdString(m_tag2->getOrigArtist()) );
+	//m_ui.editCopyright->setText( QString::fromStdString(m_tag2->getCopyright()) );
+	//const std::string&	getURL()
+	//m_ui.editEncoded->setText( QString::fromStdString(m_tag2->getEncoded()) );
 }

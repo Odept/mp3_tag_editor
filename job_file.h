@@ -32,12 +32,19 @@ class CJobSingle : public CJob
 public:
 	static CJobSingle* create(QWidget& f_parent, const QString& f_file);
 
+	void updateTag1UI(Ui::Window& f_ui) const;
+	void updateTag2UI(Ui::Window& f_ui) const;
+
 private:
 	CJobSingle(const QString& f_file):
 		CJob(f_file)
 	{}
 
-	void updateUI() const;
+	void updateControl(TextEdit& f_control, const QString& f_str) const;
+	void updateControl(TextEdit& f_control, const std::string& f_str) const
+	{
+		updateControl(f_control, QString::fromStdString(f_str));
+	}
 };
 
 #endif // __JOB_FILE__
