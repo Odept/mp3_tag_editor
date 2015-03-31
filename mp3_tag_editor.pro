@@ -26,8 +26,11 @@ HEADERS += window.h \
 	textedit.h \
 	job_file.h
 
-FORMS    += window.ui
+FORMS += window.ui
 
-#LIBS += -liconv
 LIBS += $$PWD/External/lib/id3v1.a \
 	$$PWD/External/lib/id3v2.a
+macx
+{
+	LIBS += -liconv
+}
