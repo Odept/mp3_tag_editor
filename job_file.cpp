@@ -73,13 +73,16 @@ void CJobSingle::updateControl(TextEdit& f_control, const QString& f_str) const
 
 void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 {
-	updateControl(*f_ui.editTrack,
-				  m_tag->isV11() ? QString::number(m_tag->getTrack()) : QString(""));
-	updateControl(*f_ui.editTitle  , QString        (m_tag->getTitle())   );
-	updateControl(*f_ui.editArtist , QString        (m_tag->getArtist())  );
-	updateControl(*f_ui.editAlbum  , QString        (m_tag->getAlbum())   );
-	updateControl(*f_ui.editYear   , QString::number(m_tag->getYear())    );
-	updateControl(*f_ui.editComment, QString        (m_tag->getComment()) );
+	uint uTrack = m_tag->isV11() ? m_tag->getTrack() : 0;
+	updateControl(*f_ui.editTrack, uTrack ? QString::number(uTrack) : QString(""));
+
+	uint uYear = m_tag->getYear();
+	updateControl(*f_ui.editYear, uYear ? QString::number(uYear) : QString(""));
+
+	updateControl(*f_ui.editTitle  , QString(m_tag->getTitle  ()));
+	updateControl(*f_ui.editArtist , QString(m_tag->getArtist ()));
+	updateControl(*f_ui.editAlbum  , QString(m_tag->getAlbum  ()));
+	updateControl(*f_ui.editComment, QString(m_tag->getComment()));
 
 	f_ui.comboGenre->setCurrentIndex( m_tag->getGenreIndex() );
 	f_ui.comboGenre->trackChanges(true);
