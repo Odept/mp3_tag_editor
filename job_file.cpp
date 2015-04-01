@@ -98,10 +98,9 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 	updateControl(*f_ui.editAArtist, m_tag2->getAlbumArtist());
 	updateControl(*f_ui.editComment, m_tag2->getComment()    );
 
-	//bool				isExtendedGenre() )
-	//m_ui.comboGenre->setText( getGenre()
-	//const std::string&	getGenreEx()
-	//int					getGenreIndex()
+	if(m_tag2->isExtendedGenre())
+		abort();
+	f_ui.comboGenre->setCurrentText(m_tag->getGenre());
 	f_ui.comboGenre->trackChanges(true);
 
 	updateControl(*f_ui.editComposer , m_tag2->getComposer());
