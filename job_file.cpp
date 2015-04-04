@@ -2,6 +2,7 @@
 #include "ui_window.h"
 
 #include "job_file.h"
+#include "mp3.h"
 
 #include "External/inc/id3v1.h"
 #include "External/inc/id3v2.h"
@@ -37,12 +38,13 @@ bool CJob::init(QWidget& f_parent)
 		return false;
 	}
 
-	m_tag = QSharedPointer<CID3v1>(CID3v1::gen(pData, file.size()));
-	if(m_tag.isNull())
-		m_tag = QSharedPointer<CID3v1>(CID3v1::create());
-	m_tag2 = QSharedPointer<CID3v2>(CID3v2::gen(pData, file.size()));
-	if(m_tag2.isNull())
-		m_tag2 = QSharedPointer<CID3v2>(CID3v2::create());
+	m_mp3 = QSharedPointer<CMP3>(CMP3::gen(pData, file.size()));
+	if(m_mp3.isNull())
+	{
+		QString msg = QString("Failed to parse \"%1\"").arg(m_file);
+		QMessageBox::critical(&f_parent, QString("MP3 parse error"), msg);
+		return false;
+	}
 
 	return true;
 }
@@ -73,43 +75,47 @@ void CJobSingle::updateControl(TextEdit& f_control, const QString& f_str) const
 
 void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 {
-	uint uTrack = m_tag->isV11() ? m_tag->getTrack() : 0;
+	CID3v1& tag = m_mp3->tagV1();
+
+	uint uTrack = tag.isV11() ? tag.getTrack() : 0;
 	updateControl(*f_ui.editTrack, uTrack ? QString::number(uTrack) : QString(""));
 
-	uint uYear = m_tag->getYear();
+	uint uYear = tag.getYear();
 	updateControl(*f_ui.editYear, uYear ? QString::number(uYear) : QString(""));
 
-	updateControl(*f_ui.editTitle  , QString(m_tag->getTitle  ()));
-	updateControl(*f_ui.editArtist , QString(m_tag->getArtist ()));
-	updateControl(*f_ui.editAlbum  , QString(m_tag->getAlbum  ()));
-	updateControl(*f_ui.editComment, QString(m_tag->getComment()));
+	updateControl(*f_ui.editTitle  , QString(tag.getTitle  ()));
+	updateControl(*f_ui.editArtist , QString(tag.getArtist ()));
+	updateControl(*f_ui.editAlbum  , QString(tag.getAlbum  ()));
+	updateControl(*f_ui.editComment, QString(tag.getComment()));
 
-	f_ui.comboGenre->setCurrentIndex( m_tag->getGenreIndex() );
+	f_ui.comboGenre->setCurrentIndex( tag.getGenreIndex() );
 	f_ui.comboGenre->trackChanges(true);
 }
 
 void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 {
-	updateControl(*f_ui.editTrack, m_tag2->getTrack());
-	updateControl(*f_ui.editDisc , m_tag2->getDisc() );
-	updateControl(*f_ui.editBPM  , m_tag2->getBPM()  );
+	CID3v2& tag = m_mp3->tagV2();
 
-	updateControl(*f_ui.editTitle  , m_tag2->getTitle()      );
-	updateControl(*f_ui.editArtist , m_tag2->getArtist()     );
-	updateControl(*f_ui.editAlbum  , m_tag2->getAlbum()      );
-	updateControl(*f_ui.editYear   , m_tag2->getYear()       );
-	updateControl(*f_ui.editAArtist, m_tag2->getAlbumArtist());
-	updateControl(*f_ui.editComment, m_tag2->getComment()    );
+	updateControl(*f_ui.editTrack, tag.getTrack());
+	updateControl(*f_ui.editDisc , tag.getDisc() );
+	updateControl(*f_ui.editBPM  , tag.getBPM()  );
 
-	if(m_tag2->isExtendedGenre())
+	updateControl(*f_ui.editTitle  , tag.getTitle()      );
+	updateControl(*f_ui.editArtist , tag.getArtist()     );
+	updateControl(*f_ui.editAlbum  , tag.getAlbum()      );
+	updateControl(*f_ui.editYear   , tag.getYear()       );
+	updateControl(*f_ui.editAArtist, tag.getAlbumArtist());
+	updateControl(*f_ui.editComment, tag.getComment()    );
+
+	if(tag.isExtendedGenre())
 		abort();
-	f_ui.comboGenre->setCurrentText(m_tag->getGenre());
+	f_ui.comboGenre->setCurrentText( QString::fromStdString(tag.getGenre()) );
 	f_ui.comboGenre->trackChanges(true);
 
-	updateControl(*f_ui.editComposer , m_tag2->getComposer());
-	updateControl(*f_ui.editPublisher, m_tag2->getPublisher());
-	//m_ui.editOrigArtist->setText( QString::fromStdString(m_tag2->getOrigArtist()) );
-	//m_ui.editCopyright->setText( QString::fromStdString(m_tag2->getCopyright()) );
+	updateControl(*f_ui.editComposer , tag.getComposer());
+	updateControl(*f_ui.editPublisher, tag.getPublisher());
+	//m_ui.editOrigArtist->setText( QString::fromStdString(tag.getOrigArtist()) );
+	//m_ui.editCopyright->setText( QString::fromStdString(tag.getCopyright()) );
 	//const std::string&	getURL()
-	//m_ui.editEncoded->setText( QString::fromStdString(m_tag2->getEncoded()) );
+	//m_ui.editEncoded->setText( QString::fromStdString(tag.getEncoded()) );
 }

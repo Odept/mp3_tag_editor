@@ -17,19 +17,23 @@ CONFIG += c++11
 SOURCES += main.cpp\
 	window.cpp \
 	textedit.cpp \
-	job_file.cpp
+	job_file.cpp \
+    mp3.cpp
 
 HEADERS += window.h \
 	External/inc/genre.h \
 	External/inc/id3v1.h \
 	External/inc/id3v2.h \
+	External/inc/mpeg.h \
 	textedit.h \
-	job_file.h
+	job_file.h \
+    mp3.h
 
 FORMS += window.ui
 
 LIBS += $$PWD/External/lib/id3v1.a \
-	$$PWD/External/lib/id3v2.a
+	$$PWD/External/lib/id3v2.a \
+	$$PWD/External/lib/mpeg.a
 macx
 {
 	LIBS += -liconv
