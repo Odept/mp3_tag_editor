@@ -1,5 +1,4 @@
 #include "textedit.h"
-#include "ui_window.h"
 
 
 ChangeHighlighter::ChangeHighlighter(QWidget* parent):

@@ -4,7 +4,10 @@
 #pragma once
 
 #include <QString>
+#include <QDebug>
 
+
+#define ASSERT(expr) if(!(expr)) abort()
 
 #define NEW_EXCEPT(expr, pParent) \
 	do { \

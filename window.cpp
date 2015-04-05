@@ -8,14 +8,14 @@
 #include <QMimeData>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QFileDialog>
 
 #include "External/inc/genre.h"
 
 
 Window::Window(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::Window),
-	m_job(NULL)
+	ui(new Ui::Window)
 {
 	ui->setupUi(this);
 
@@ -41,8 +41,35 @@ Window::Window(QWidget *parent) :
 
 Window::~Window()
 {
-	delete m_job;
 	delete ui;
+}
+
+// ============================================================================
+void Window::createJob(const QString& f_path)
+{
+	ASSERT(m_job.isNull());
+	NEW_EXCEPT(m_job = QSharedPointer<CJobSingle>(new CJobSingle(f_path)), this);
+	if(m_job.isNull())
+		return;
+
+	resetFields(true);
+	onTagSelectionChange(ui->comboTag->currentIndex());
+	m_job->updateMPEGInfo(*ui);
+}
+
+bool Window::destroyJob()
+{
+	if(m_job.isNull())
+		return true;
+
+	//if( !question )
+	//	return false;
+	m_job.clear();
+
+	resetFields();
+	resetMPEGInfo();
+
+	return true;
 }
 
 
@@ -69,30 +96,16 @@ void Window::dragEnterEvent(QDragEnterEvent* pEvent)
 
 void Window::dropEvent(QDropEvent* pEvent)
 {
-	if(m_job)
-	{
-		//if( !question )
-		//	return;
-		delete m_job;
-		m_job = NULL;
-
-		resetFields();
-		resetMPEGInfo();
-	}
-
 	const QList<QUrl> urls = pEvent->mimeData()->urls();
 	const int nURLs = urls.size();
 	if(nURLs == 1)
 	{
+		if(!destroyJob())
+			return;
+
 		ui->tabsMode->setCurrentIndex(0);
 		QFileInfo fi(urls[0].toLocalFile());
-		NEW_EXCEPT(m_job = new CJobSingle(fi.absoluteFilePath()), this);
-		if(m_job)
-		{
-			resetFields(true);
-			onTagSelectionChange(ui->comboTag->currentIndex());
-			m_job->updateMPEGInfo(*ui);
-		}
+		createJob(fi.absoluteFilePath());
 	}
 	else
 	{
@@ -113,6 +126,29 @@ void Window::dropEvent(QDropEvent* pEvent)
 }
 
 
+void Window::on_actionOpen_triggered()
+{
+	//files = QFileDialog::getOpenFileNames(this, QString("Select music files..."), "",
+	//									  QString("MP3 Files (*.mp3);;All Files (*.*)"),
+	//									  0, QFileDialog::ReadOnly);
+	QFileDialog dialog(this, QString("Select music files..."));
+	dialog.setFileMode(QFileDialog::ExistingFiles);
+	dialog.setNameFilter(tr("MP3 Files (*.mp3);;All Files (*.*)"));
+	dialog.setViewMode(QFileDialog::Detail);
+	dialog.setOptions(QFileDialog::ReadOnly);
+	if(!dialog.exec())
+		return;
+
+	QStringList files = dialog.selectedFiles();
+	if(files.size() == 1)
+	{
+		if(!destroyJob())
+			return;
+		createJob(files[0]);
+	}
+}
+
+// ============================================================================
 void Window::resetField(TextEdit& f_control, bool f_enabled)
 {
 	f_control.setEnabled(f_enabled);
@@ -184,13 +220,12 @@ void Window::onTagSelectionChange(int f_index)
 	ui->editPublisher->setVisible(isTabV2);
 	ui->labelPublisher->setVisible(isTabV2);
 
-	if(m_job)
-	{
-		resetFields(true);
+	if(m_job.isNull())
+		return;
 
-		if(isTabV2)
-			m_job->updateTag2UI(*ui);
-		else
-			m_job->updateTag1UI(*ui);
-	}
+	resetFields(true);
+	if(isTabV2)
+		m_job->updateTag2UI(*ui);
+	else
+		m_job->updateTag1UI(*ui);
 }

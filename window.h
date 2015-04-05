@@ -20,11 +20,13 @@ public:
 	explicit Window(QWidget *parent = 0);
 	~Window();
 
-protected:
+private:
+	void createJob(const QString& f_path);
+	bool destroyJob();
+
 	void dragEnterEvent(QDragEnterEvent* pEvent);
 	void dropEvent(QDropEvent* pEvent);
 
-private:
 	void resetField(TextEdit& f_control, bool f_enabled);
 	void resetFields(bool f_enabled = false);
 	void resetMPEGInfo();
@@ -32,10 +34,12 @@ private:
 private slots:
 	void onTagSelectionChange(int f_index);
 
+	void on_actionOpen_triggered();
+
 private:
 	Ui::Window *ui;
 
-	CJobSingle* m_job;
+	QSharedPointer<CJobSingle> m_job;
 };
 
 #endif // __WINDOW_H__
