@@ -1,43 +1,33 @@
-#ifndef __JOB_FILE__
-#define __JOB_FILE__
+#ifndef __JOB_FILE_H__
+#define __JOB_FILE_H__
 
-
-class CMP3;
+#include "mp3.h"
 
 
 class CJob
 {
 public:
-	virtual ~CJob();
+	virtual ~CJob() {}
 
 protected:
-	CJob(const QString& f_file):
-		m_file(f_file)
-	{}
-
-	virtual bool init(QWidget& f_parent);
+	CJob(const QString& f_path);
 
 protected:
-	QSharedPointer<CMP3> m_mp3;
+	QString m_path;
 
-private:
-	QString m_file;
+	CMP3 m_mp3;
 };
 
 
 class CJobSingle : public CJob
 {
 public:
-	static CJobSingle* create(QWidget& f_parent, const QString& f_file);
+	CJobSingle(const QString& f_path): CJob(f_path) {}
 
 	void updateTag1UI(Ui::Window& f_ui) const;
 	void updateTag2UI(Ui::Window& f_ui) const;
 
 private:
-	CJobSingle(const QString& f_file):
-		CJob(f_file)
-	{}
-
 	void updateControl(TextEdit& f_control, const QString& f_str) const;
 	void updateControl(TextEdit& f_control, const std::string& f_str) const
 	{
@@ -45,4 +35,4 @@ private:
 	}
 };
 
-#endif // __JOB_FILE__
+#endif // __JOB_FILE_H__

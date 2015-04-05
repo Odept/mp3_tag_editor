@@ -2,71 +2,45 @@
 #include "ui_window.h"
 
 #include "job_file.h"
+
 #include "mp3.h"
+#include "error.h"
 
 #include "External/inc/id3v1.h"
 #include "External/inc/id3v2.h"
 
 #include <QFileInfo>
-#include <QMessageBox>
 
 
-bool CJob::init(QWidget& f_parent)
+class EFile : public Error
 {
-	QFileInfo fi(m_file);
-	if(!fi.exists())
-	{
-		QString msg = QString("File \"%1\" doesn't exist").arg(m_file);
-		QMessageBox::critical(&f_parent, QString("File open error"), msg);
-		return false;
-	}
+public:
+	EFile(const QString& f_msg):
+		Error(QString("File open error"), f_msg)
+	{}
+};
 
-	QFile file(m_file);
+// ============================================================================
+CJob::CJob(const QString& f_path):
+	m_path(f_path)
+{
+	QFileInfo fi(m_path);
+	if(!fi.exists())
+		throw EFile( QString("File \"%1\" doesn't exist").arg(f_path) );
+
+	QFile file(m_path);
 	if( !file.open(QIODevice::ReadOnly) )
-	{
-		QString msg = QString("Failed to open \"%1\" (%2)").arg(m_file).arg(file.error());
-		QMessageBox::critical(&f_parent, QString("File open error"), msg);
-		return false;
-	}
+		throw EFile( QString("Failed to open \"%1\" (%2)").arg(f_path).arg(file.error()) );
 
 	const uchar* pData = file.map(0, file.size());
 	file.close();
 	if(!pData)
-	{
-		QString msg = QString("Failed to map \"%1\"").arg(m_file);
-		QMessageBox::critical(&f_parent, QString("File open error"), msg);
-		return false;
-	}
+		throw EFile( QString("Failed to map \"%1\"").arg(f_path) );
 
-	m_mp3 = QSharedPointer<CMP3>(CMP3::gen(pData, file.size()));
-	if(m_mp3.isNull())
-	{
-		QString msg = QString("Failed to parse \"%1\"").arg(m_file);
-		QMessageBox::critical(&f_parent, QString("MP3 parse error"), msg);
-		return false;
-	}
-
-	return true;
+	m_mp3 = CMP3(pData, file.size());
 }
-
-
-CJob::~CJob() {}
 
 // ============================================================================
-CJobSingle* CJobSingle::create(QWidget& f_parent, const QString& f_file)
-{
-	CJobSingle* pJob = new CJobSingle(f_file);
-
-	if( pJob->init(f_parent) )
-		return pJob;
-	else
-	{
-		delete pJob;
-		return NULL;
-	}
-}
-
-
 void CJobSingle::updateControl(TextEdit& f_control, const QString& f_str) const
 {
 	f_control.setText(f_str);
@@ -75,7 +49,7 @@ void CJobSingle::updateControl(TextEdit& f_control, const QString& f_str) const
 
 void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 {
-	CID3v1& tag = m_mp3->tagV1();
+	CID3v1& tag = m_mp3.tagV1();
 
 	uint uTrack = tag.isV11() ? tag.getTrack() : 0;
 	updateControl(*f_ui.editTrack, uTrack ? QString::number(uTrack) : QString(""));
@@ -94,7 +68,7 @@ void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 
 void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 {
-	CID3v2& tag = m_mp3->tagV2();
+	CID3v2& tag = m_mp3.tagV2();
 
 	updateControl(*f_ui.editTrack, tag.getTrack());
 	updateControl(*f_ui.editDisc , tag.getDisc() );

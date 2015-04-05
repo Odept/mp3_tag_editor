@@ -1,10 +1,13 @@
 #include "window.h"
 #include "ui_window.h"
+
 #include "job_file.h"
+#include "error.h"
 
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QFileInfo>
+#include <QMessageBox>
 
 #include "External/inc/genre.h"
 
@@ -81,7 +84,7 @@ void Window::dropEvent(QDropEvent* pEvent)
 	{
 		ui->tabsMode->setCurrentIndex(0);
 		QFileInfo fi(urls[0].toLocalFile());
-		m_job = CJobSingle::create(*this, fi.absoluteFilePath());
+		NEW_EXCEPT(m_job = new CJobSingle(fi.absoluteFilePath()), this);
 		if(m_job)
 		{
 			resetFields(true);
