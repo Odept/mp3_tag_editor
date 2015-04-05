@@ -24,8 +24,9 @@ class CJobSingle : public CJob
 public:
 	CJobSingle(const QString& f_path): CJob(f_path) {}
 
-	void updateTag1UI(Ui::Window& f_ui) const;
-	void updateTag2UI(Ui::Window& f_ui) const;
+	void updateTag1UI  (Ui::Window& f_ui) const;
+	void updateTag2UI  (Ui::Window& f_ui) const;
+	void updateMPEGInfo(Ui::Window& f_ui) const;
 
 private:
 	void updateControl(TextEdit& f_control, const QString& f_str) const;

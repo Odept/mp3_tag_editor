@@ -8,6 +8,7 @@
 
 #include "External/inc/id3v1.h"
 #include "External/inc/id3v2.h"
+#include "External/inc/mpeg.h"
 
 #include <QFileInfo>
 
@@ -92,4 +93,23 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 	//m_ui.editCopyright->setText( QString::fromStdString(tag.getCopyright()) );
 	//const std::string&	getURL()
 	//m_ui.editEncoded->setText( QString::fromStdString(tag.getEncoded()) );
+}
+
+void CJobSingle::updateMPEGInfo(Ui::Window& f_ui) const
+{
+	const CMPEGStream& mpeg = m_mp3.mpeg();
+
+	uint offset = mpeg.getFirstDataFrameOffset();
+
+	f_ui.boxInfo->setTitle( QString("MPEG %1 Layer %2").arg(mpeg.getVersion()).arg(mpeg.getLayer()) );
+
+	f_ui.labelOffset->setText( QString("%1 bytes %2").arg(m_mp3.firstFrameOffset() + offset)
+													 .arg(offset ? " (+Xing)" : "") );
+	f_ui.labelFrames->setText( QString::number(mpeg.getFrameCount()) );
+	f_ui.labelLen->setText( QString::number(mpeg.getLength()) );
+
+	f_ui.labelBitrate->setText( QString("%1 kbps %2").arg(mpeg.getBitrate()).arg(mpeg.isVBR() ? " (VBR)" : "") );
+	f_ui.labelSamplingRate->setText( QString("%1 Hz").arg(mpeg.getSamplingRate()) );
+	f_ui.labelMode->setText( QString(mpeg.getChannelMode()) );
+	f_ui.labelEmphasis->setText( QString(mpeg.getEmphasis()) );
 }

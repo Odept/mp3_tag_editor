@@ -62,7 +62,7 @@
           <rect>
            <x>48</x>
            <y>52</y>
-           <width>51</width>
+           <width>53</width>
            <height>25</height>
           </rect>
          </property>
@@ -348,9 +348,9 @@
         <widget class="QLabel" name="labelAArtist">
          <property name="geometry">
           <rect>
-           <x>12</x>
+           <x>16</x>
            <y>164</y>
-           <width>93</width>
+           <width>89</width>
            <height>25</height>
           </rect>
          </property>
@@ -592,19 +592,162 @@
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
+        <widget class="QLabel" name="labelTagOffset">
+         <property name="geometry">
+          <rect>
+           <x>208</x>
+           <y>24</y>
+           <width>89</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>@ %u bytes</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="boxInfo">
         <property name="geometry">
          <rect>
-          <x>475</x>
-          <y>197</y>
+          <x>476</x>
+          <y>224</y>
           <width>333</width>
-          <height>161</height>
+          <height>133</height>
          </rect>
         </property>
         <property name="title">
          <string>MPEG Info</string>
         </property>
+        <widget class="QLabel" name="labelNameOffset">
+         <property name="geometry">
+          <rect>
+           <x>8</x>
+           <y>48</y>
+           <width>89</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>First Frame @</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelNameFrames">
+         <property name="geometry">
+          <rect>
+           <x>8</x>
+           <y>72</y>
+           <width>89</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Frames Total:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelNameLen">
+         <property name="geometry">
+          <rect>
+           <x>8</x>
+           <y>96</y>
+           <width>89</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Track Lenght:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelBitrate">
+         <property name="geometry">
+          <rect>
+           <x>8</x>
+           <y>20</y>
+           <width>61</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>320 kbps</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelMode">
+         <property name="geometry">
+          <rect>
+           <x>164</x>
+           <y>20</y>
+           <width>81</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Joint Stereo</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelEmphasis">
+         <property name="geometry">
+          <rect>
+           <x>264</x>
+           <y>20</y>
+           <width>65</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>CCIT J.17</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelOffset">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>48</y>
+           <width>165</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>41235675 bytes (+Xing)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelFrames">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>72</y>
+           <width>45</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>17000</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelLen">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>96</y>
+           <width>133</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>1 hour 15 min 37 sec</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="labelSamplingRate">
+         <property name="geometry">
+          <rect>
+           <x>88</x>
+           <y>20</y>
+           <width>65</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>44100 Hz</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="boxTagEx">
         <property name="geometry">
@@ -612,7 +755,7 @@
           <x>476</x>
           <y>0</y>
           <width>333</width>
-          <height>197</height>
+          <height>221</height>
          </rect>
         </property>
         <property name="title">

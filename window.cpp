@@ -89,6 +89,7 @@ void Window::dropEvent(QDropEvent* pEvent)
 		{
 			resetFields(true);
 			onTagSelectionChange(ui->comboTag->currentIndex());
+			m_job->updateMPEGInfo(*ui);
 		}
 	}
 	else
@@ -145,6 +146,8 @@ void Window::resetFields(bool f_enabled)
 void Window::onTagSelectionChange(int f_index)
 {
 	bool isTabV2 = (f_index != 1);
+
+	ui->labelTagOffset->setVisible(f_index == 2);
 
 	ui->comboGenre->setEditable(isTabV2);
 
