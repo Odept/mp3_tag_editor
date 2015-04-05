@@ -18,27 +18,31 @@ public:
 	static CID3v1* gen(const uchar* f_pData, unsigned long long f_size);
 
 public:
-	bool		isV11()			const;
+	bool isV11() const;
+	void setV11(bool f_val);
 
 #define DECL_GETTER_SETTER(Type, Name) \
-	const Type get##Name() const; \
-	void set##Name(const Type)
+	Type get##Name() const; \
+	void set##Name(Type)
 
-	DECL_GETTER_SETTER(char*, Title     );
-	DECL_GETTER_SETTER(char*, Artist    );
-	DECL_GETTER_SETTER(char*, Album     );
-	DECL_GETTER_SETTER(uint , Year      );
-	DECL_GETTER_SETTER(char*, Comment   );
-	DECL_GETTER_SETTER(uint , Track     );
-	DECL_GETTER_SETTER(uint , GenreIndex);
-	DECL_GETTER_SETTER(char*, Genre     );
+	DECL_GETTER_SETTER(const char*, Title     );
+	DECL_GETTER_SETTER(const char*, Artist    );
+	DECL_GETTER_SETTER(const char*, Album     );
+	DECL_GETTER_SETTER(      uint , Year      );
+	DECL_GETTER_SETTER(const char*, Comment   );
+	DECL_GETTER_SETTER(      uint , Track     );
+	DECL_GETTER_SETTER(      uint , GenreIndex);
+	DECL_GETTER_SETTER(const char*, Genre     );
 #undef DECL_GETTER_SETTER
+
+	bool serialize(const uchar* f_pData, uint f_size) const;
 		
 private:
 	CID3v1(const Tag& f_tag);
 	CID3v1();
 
 	void copyField(char* f_dst, const char* f_src, uint f_size);
+	void serializeField(char* f_dst, const char* f_src, uint f_sizeDst) const;
 
 private:
 	bool m_v11;
@@ -52,7 +56,7 @@ private:
 	uint m_genre;
 
 public:
-	static const uint TagSize = 128;
+	static const uint Size = 128;
 };
 
 #endif // __ID3_V1_H__
