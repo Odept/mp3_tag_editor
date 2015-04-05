@@ -36,6 +36,7 @@ Window::Window(QWidget *parent) :
 					this, SLOT  (onTagSelectionChange(int)));
 
 	resetFields();
+	resetMPEGInfo();
 }
 
 Window::~Window()
@@ -76,6 +77,7 @@ void Window::dropEvent(QDropEvent* pEvent)
 		m_job = NULL;
 
 		resetFields();
+		resetMPEGInfo();
 	}
 
 	const QList<QUrl> urls = pEvent->mimeData()->urls();
@@ -140,6 +142,22 @@ void Window::resetFields(bool f_enabled)
 	resetField(*ui->editAArtist  , f_enabled);
 	resetField(*ui->editComposer , f_enabled);
 	resetField(*ui->editPublisher, f_enabled);
+}
+
+
+void Window::resetMPEGInfo()
+{
+	ui->boxInfo->setVisible(false);
+	ui->boxInfo->setTitle( QString("MPEG Info") );
+
+	ui->labelBitrate->clear();
+	ui->labelSamplingRate->clear();
+	ui->labelMode->clear();
+	ui->labelEmphasis->clear();
+
+	ui->labelOffset->clear();
+	ui->labelFrames->clear();
+	ui->labelLen->clear();
 }
 
 

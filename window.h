@@ -27,6 +27,7 @@ protected:
 private:
 	void resetField(TextEdit& f_control, bool f_enabled);
 	void resetFields(bool f_enabled = false);
+	void resetMPEGInfo();
 
 private slots:
 	void onTagSelectionChange(int f_index);

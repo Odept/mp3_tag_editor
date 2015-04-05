@@ -666,9 +666,6 @@
            <height>25</height>
           </rect>
          </property>
-         <property name="text">
-          <string>320 kbps</string>
-         </property>
         </widget>
         <widget class="QLabel" name="labelMode">
          <property name="geometry">
@@ -679,9 +676,6 @@
            <height>25</height>
           </rect>
          </property>
-         <property name="text">
-          <string>Joint Stereo</string>
-         </property>
         </widget>
         <widget class="QLabel" name="labelEmphasis">
          <property name="geometry">
@@ -691,9 +685,6 @@
            <width>65</width>
            <height>25</height>
           </rect>
-         </property>
-         <property name="text">
-          <string>CCIT J.17</string>
          </property>
         </widget>
         <widget class="QLabel" name="labelOffset">
@@ -706,7 +697,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>41235675 bytes (+Xing)</string>
+          <string/>
          </property>
         </widget>
         <widget class="QLabel" name="labelFrames">
@@ -714,12 +705,12 @@
           <rect>
            <x>100</x>
            <y>72</y>
-           <width>45</width>
+           <width>53</width>
            <height>25</height>
           </rect>
          </property>
          <property name="text">
-          <string>17000</string>
+          <string/>
          </property>
         </widget>
         <widget class="QLabel" name="labelLen">
@@ -732,7 +723,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>1 hour 15 min 37 sec</string>
+          <string/>
          </property>
         </widget>
         <widget class="QLabel" name="labelSamplingRate">
@@ -743,9 +734,6 @@
            <width>65</width>
            <height>25</height>
           </rect>
-         </property>
-         <property name="text">
-          <string>44100 Hz</string>
          </property>
         </widget>
        </widget>

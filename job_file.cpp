@@ -11,6 +11,8 @@
 #include "External/inc/mpeg.h"
 
 #include <QFileInfo>
+#include <QDateTime>
+#include <QtMath>
 
 
 class EFile : public Error
@@ -103,13 +105,27 @@ void CJobSingle::updateMPEGInfo(Ui::Window& f_ui) const
 
 	f_ui.boxInfo->setTitle( QString("MPEG %1 Layer %2").arg(mpeg.getVersion()).arg(mpeg.getLayer()) );
 
-	f_ui.labelOffset->setText( QString("%1 bytes %2").arg(m_mp3.firstFrameOffset() + offset)
-													 .arg(offset ? " (+Xing)" : "") );
-	f_ui.labelFrames->setText( QString::number(mpeg.getFrameCount()) );
-	f_ui.labelLen->setText( QString::number(mpeg.getLength()) );
-
 	f_ui.labelBitrate->setText( QString("%1 kbps %2").arg(mpeg.getBitrate()).arg(mpeg.isVBR() ? " (VBR)" : "") );
 	f_ui.labelSamplingRate->setText( QString("%1 Hz").arg(mpeg.getSamplingRate()) );
 	f_ui.labelMode->setText( QString(mpeg.getChannelMode()) );
 	f_ui.labelEmphasis->setText( QString(mpeg.getEmphasis()) );
+
+	f_ui.labelOffset->setText( QString("%1 bytes %2").arg(m_mp3.firstFrameOffset() + offset)
+													 .arg(offset ? " (+Xing)" : "") );
+	f_ui.labelFrames->setText( QString::number(mpeg.getFrameCount()) );
+
+	// Format time
+	float fTime = mpeg.getLength();
+	QDateTime time( QDateTime::fromTime_t(uint(fTime)).toUTC().addMSecs( uint((fTime - qFloor(fTime)) * 1000) ) );
+
+	QString str;
+	if(fTime >= 60 * 60)
+		str = time.toString("hh:mm:ss.zzz");
+	else if(fTime >= 60)
+		str = time.toString("mm:ss.zzz");
+	else
+		str = time.toString("ss.zzz");
+	f_ui.labelLen->setText( time.toString(str) );
+
+	f_ui.boxInfo->setVisible(true);
 }
