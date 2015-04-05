@@ -18,7 +18,7 @@ SOURCES += main.cpp\
 	window.cpp \
 	textedit.cpp \
 	job_file.cpp \
-    mp3.cpp
+	mp3.cpp
 
 HEADERS += window.h \
 	External/inc/genre.h \
@@ -27,7 +27,8 @@ HEADERS += window.h \
 	External/inc/mpeg.h \
 	textedit.h \
 	job_file.h \
-    mp3.h
+	mp3.h \
+	error.h
 
 FORMS += window.ui
 
