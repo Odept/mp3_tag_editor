@@ -50,7 +50,7 @@ private:
 	
 public:
 	static CID3v2* create();
-	static CID3v2* gen(const uchar* f_pData, unsigned long long f_size);
+	static CID3v2* gen(const uchar* f_pData, unsigned long long f_size, uint* f_puTagSize = NULL);
 
 public:
 	~CID3v2();
@@ -119,5 +119,5 @@ private:
 	std::string m_strEmpty;
 };
 
-#endif // __ID3_V1_H__
+#endif // __ID3_V2_H__
 
