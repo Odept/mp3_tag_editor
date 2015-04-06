@@ -173,6 +173,8 @@ void Window::resetFields(bool f_enabled)
 	//ui->comboGenre->clear();
 
 	// Clear ID3v2 fields
+	ui->labelTagOffset->clear();
+
 	resetField(*ui->editDisc     , f_enabled);
 	resetField(*ui->editBPM      , f_enabled);
 	resetField(*ui->editAArtist  , f_enabled);

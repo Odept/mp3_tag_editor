@@ -18,12 +18,15 @@ public:
 
 	CID3v1& tagV1() const { return *m_tag;  }
 	CID3v2& tagV2() const { return *m_tag2; }
+	int tag2Offset() const { return m_tag2Offset; }
 
-	uint firstFrameOffset() const { return m_mpegOffset; }
 	const CMPEGStream& mpeg() const { return *m_mpeg; }
+	uint firstFrameOffset() const { return m_mpegOffset; }
 
 private:
 	QSharedPointer<CID3v1> m_tag;
+
+	int m_tag2Offset;
 	QSharedPointer<CID3v2> m_tag2;
 
 	uint m_mpegOffset;

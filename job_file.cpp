@@ -73,6 +73,8 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 {
 	CID3v2& tag = m_mp3.tagV2();
 
+	f_ui.labelTagOffset->setText( QString("@ %1 bytes").arg(m_mp3.tag2Offset()) );
+
 	updateControl(*f_ui.editTrack, tag.getTrack());
 	updateControl(*f_ui.editDisc , tag.getDisc() );
 	updateControl(*f_ui.editBPM  , tag.getBPM()  );

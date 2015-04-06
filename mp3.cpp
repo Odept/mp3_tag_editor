@@ -17,6 +17,7 @@ public:
 
 
 CMP3::CMP3(const uchar* f_data, unsigned long long f_size):
+	m_tag2Offset(-1),
 	m_mpegOffset(f_size)
 {
 	for(unsigned long long i = 0, size = f_size; i < f_size;)
@@ -37,6 +38,7 @@ CMP3::CMP3(const uchar* f_data, unsigned long long f_size):
 			CID3v2* pTag = CID3v2::gen(pData, size, &uTagSize);
 			if(pTag)
 			{
+				m_tag2Offset = i;
 				m_tag2 = QSharedPointer<CID3v2>(pTag);
 				i += uTagSize;
 				size -= uTagSize;
