@@ -148,6 +148,13 @@ void Window::on_actionOpen_triggered()
 	}
 }
 
+void Window::on_actionQuit_triggered()
+{
+	//if(m_job /*|| m_job_batch*/)
+	// question
+	this->close();
+}
+
 // ============================================================================
 void Window::resetField(TextEdit& f_control, bool f_enabled)
 {
