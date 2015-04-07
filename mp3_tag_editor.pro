@@ -25,6 +25,7 @@ HEADERS += window.h \
 	External/inc/id3v1.h \
 	External/inc/id3v2.h \
 	External/inc/mpeg.h \
+	External/inc/ape.h \
 	textedit.h \
 	job_file.h \
 	mp3.h \

@@ -6,6 +6,7 @@
 
 class CID3v1;
 class CID3v2;
+class CAPE;
 class CMPEGStream;
 
 
@@ -28,6 +29,8 @@ private:
 
 	int m_tag2Offset;
 	QSharedPointer<CID3v2> m_tag2;
+
+	QSharedPointer<CAPE> m_ape;
 
 	uint m_mpegOffset;
 	QSharedPointer<CMPEGStream> m_mpeg;
