@@ -53,7 +53,9 @@ CMP3::CMP3(const uchar* f_data, unsigned long long f_size):
 		}
 
 		if(f_data[i] != 0)
-			throw EMP3(QString("Unsupported data @ offset %1").arg(i));
+			throw EMP3(QString("Unsupported data @ offset %1 (0x").arg(i) +
+					   QString::number(i, 16).toUpper() +
+					   QString(")"));
 		i++;
 		size--;
 	}
