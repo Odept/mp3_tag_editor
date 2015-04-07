@@ -15,6 +15,7 @@ class CRawFrame3;
 class CTextFrame3;
 class CGenreFrame3;
 class CCommentFrame3;
+class CURLFrame3;
 
 
 enum FrameID
@@ -84,10 +85,11 @@ public:
 	DECL_GETTER_SETTER(OrigArtist);
 	DECL_GETTER_SETTER(Copyright);
 	//DECL_GETTER_SETTER(URL);
+	const std::string& getURL();
 	DECL_GETTER_SETTER(Encoded);
 #undef DECL_GETTER_SETTER
 
-	const std::vector<CRawFrame3*> getUnknownFrames() const;
+	std::vector<std::string> getUnknownFrames() const;
 
 private:
 	static const Tag* findTag(const uchar* f_pData, unsigned long long f_size);
@@ -105,6 +107,7 @@ private:
 	CTextFrame3* getTextFrame(FrameID f_id) const;
 	const CGenreFrame3* getGenreFrame() const;
 	const CCommentFrame3* getCommentFrame() const;
+	const CURLFrame3* getURLFrame() const;
 
 	const std::string& strTextFrame(FrameID f_id) const;
 	void setTextFrame(FrameID f_id, const std::string& f_val);
@@ -114,7 +117,9 @@ private:
 
 	typedef std::map<FrameID, CFrame3*> frames_t;
 	frames_t m_frames;
-	std::vector<CRawFrame3*> m_framesUnknown;
+
+	typedef std::vector<CRawFrame3*> unknownFrames_t;
+	unknownFrames_t m_framesUnknown;
 
 	std::string m_strEmpty;
 };
