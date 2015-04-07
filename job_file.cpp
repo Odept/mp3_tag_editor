@@ -91,12 +91,12 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 	f_ui.comboGenre->setCurrentText( QString::fromStdString(tag.getGenre()) );
 	f_ui.comboGenre->trackChanges(true);
 
-	updateControl(*f_ui.editComposer , tag.getComposer());
-	updateControl(*f_ui.editPublisher, tag.getPublisher());
-	//m_ui.editOrigArtist->setText( QString::fromStdString(tag.getOrigArtist()) );
-	//m_ui.editCopyright->setText( QString::fromStdString(tag.getCopyright()) );
-	//const std::string&	getURL()
-	//m_ui.editEncoded->setText( QString::fromStdString(tag.getEncoded()) );
+	updateControl(*f_ui.editComposer  , tag.getComposer()  );
+	updateControl(*f_ui.editPublisher , tag.getPublisher() );
+	updateControl(*f_ui.editOrigArtist, tag.getOrigArtist());
+	updateControl(*f_ui.editCopyright , tag.getCopyright() );
+	updateControl(*f_ui.editURL       , tag.getURL()       );
+	updateControl(*f_ui.editEncoded   , tag.getEncoded()   );
 }
 
 void CJobSingle::updateMPEGInfo(Ui::Window& f_ui) const

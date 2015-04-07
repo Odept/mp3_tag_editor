@@ -182,11 +182,17 @@ void Window::resetFields(bool f_enabled)
 	// Clear ID3v2 fields
 	ui->labelTagOffset->clear();
 
-	resetField(*ui->editDisc     , f_enabled);
-	resetField(*ui->editBPM      , f_enabled);
-	resetField(*ui->editAArtist  , f_enabled);
-	resetField(*ui->editComposer , f_enabled);
-	resetField(*ui->editPublisher, f_enabled);
+	resetField(*ui->editDisc      , f_enabled);
+	resetField(*ui->editBPM       , f_enabled);
+	resetField(*ui->editAArtist   , f_enabled);
+	resetField(*ui->editComposer  , f_enabled);
+	resetField(*ui->editPublisher , f_enabled);
+	resetField(*ui->editOrigArtist, f_enabled);
+	resetField(*ui->editCopyright , f_enabled);
+	resetField(*ui->editURL       , f_enabled);
+	resetField(*ui->editEncoded   , f_enabled);
+
+	//ui->graphArt
 }
 
 
@@ -214,20 +220,22 @@ void Window::onTagSelectionChange(int f_index)
 
 	ui->comboGenre->setEditable(isTabV2);
 
-	ui->editDisc->setVisible(isTabV2);
 	ui->labelDisc->setVisible(isTabV2);
+	ui->editDisc->setVisible(isTabV2);
 
-	ui->editBPM->setVisible(isTabV2);
 	ui->labelBPM->setVisible(isTabV2);
+	ui->editBPM->setVisible(isTabV2);
 
-	ui->editAArtist->setVisible(isTabV2);
 	ui->labelAArtist->setVisible(isTabV2);
+	ui->editAArtist->setVisible(isTabV2);
 
-	ui->editComposer->setVisible(isTabV2);
 	ui->labelComposer->setVisible(isTabV2);
+	ui->editComposer->setVisible(isTabV2);
 
-	ui->editPublisher->setVisible(isTabV2);
 	ui->labelPublisher->setVisible(isTabV2);
+	ui->editPublisher->setVisible(isTabV2);
+
+	ui->boxTagEx->setVisible(isTabV2);
 
 	if(m_job.isNull())
 		return;
