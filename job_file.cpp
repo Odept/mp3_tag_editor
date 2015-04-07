@@ -112,8 +112,10 @@ void CJobSingle::updateMPEGInfo(Ui::Window& f_ui) const
 	f_ui.labelMode->setText( QString(mpeg.getChannelMode()) );
 	f_ui.labelEmphasis->setText( QString(mpeg.getEmphasis()) );
 
-	f_ui.labelOffset->setText( QString("%1 bytes %2").arg(m_mp3.firstFrameOffset() + offset)
-													 .arg(offset ? " (+Xing)" : "") );
+	f_ui.labelOffset->setText(QString("%1 (0x").arg(m_mp3.firstFrameOffset()) +
+							  QString::number(m_mp3.firstFrameOffset(), 16).toUpper() +
+							  QString(") bytes") +
+							  QString(offset ? " (+Xing)" : ""));
 	f_ui.labelFrames->setText( QString::number(mpeg.getFrameCount()) );
 
 	// Format time

@@ -620,7 +620,7 @@
           <rect>
            <x>8</x>
            <y>48</y>
-           <width>89</width>
+           <width>97</width>
            <height>25</height>
           </rect>
          </property>
@@ -633,7 +633,7 @@
           <rect>
            <x>8</x>
            <y>72</y>
-           <width>89</width>
+           <width>97</width>
            <height>25</height>
           </rect>
          </property>
@@ -646,12 +646,12 @@
           <rect>
            <x>8</x>
            <y>96</y>
-           <width>89</width>
+           <width>97</width>
            <height>25</height>
           </rect>
          </property>
          <property name="text">
-          <string>Track Lenght:</string>
+          <string>Track Length:</string>
          </property>
         </widget>
         <widget class="QLabel" name="labelBitrate">
@@ -669,7 +669,7 @@
           <rect>
            <x>164</x>
            <y>20</y>
-           <width>81</width>
+           <width>89</width>
            <height>25</height>
           </rect>
          </property>
@@ -687,9 +687,9 @@
         <widget class="QLabel" name="labelOffset">
          <property name="geometry">
           <rect>
-           <x>100</x>
+           <x>108</x>
            <y>48</y>
-           <width>165</width>
+           <width>229</width>
            <height>25</height>
           </rect>
          </property>
@@ -700,7 +700,7 @@
         <widget class="QLabel" name="labelFrames">
          <property name="geometry">
           <rect>
-           <x>100</x>
+           <x>108</x>
            <y>72</y>
            <width>53</width>
            <height>25</height>
@@ -713,7 +713,7 @@
         <widget class="QLabel" name="labelLen">
          <property name="geometry">
           <rect>
-           <x>100</x>
+           <x>108</x>
            <y>96</y>
            <width>133</width>
            <height>25</height>
@@ -763,7 +763,7 @@
      <x>0</x>
      <y>0</y>
      <width>845</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="defaultUp">
