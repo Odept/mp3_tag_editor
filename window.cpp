@@ -177,7 +177,9 @@ void Window::resetFields(bool f_enabled)
 
 	ui->comboGenre->setEnabled(f_enabled);
 	ui->comboGenre->trackChanges(false);
-	//ui->comboGenre->clear();
+	ui->comboGenre->clear();
+	ui->comboGenre->setCurrentIndex(-1);
+	//ui->labelGenre->clear();
 
 	// Clear ID3v2 fields
 	ui->labelTagOffset->clear();
