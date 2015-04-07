@@ -32,10 +32,8 @@ HEADERS += window.h \
 
 FORMS += window.ui
 
-LIBS += $$PWD/External/lib/id3v1.a \
-	$$PWD/External/lib/id3v2.a \
+LIBS += $$PWD/External/lib/tag.a \
 	$$PWD/External/lib/mpeg.a
-macx
-{
+macx {
 	LIBS += -liconv
 }
