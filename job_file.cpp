@@ -103,7 +103,7 @@ void CJobSingle::updateMPEGInfo(Ui::Window& f_ui) const
 {
 	const CMPEGStream& mpeg = m_mp3.mpeg();
 
-	uint offset = mpeg.getFirstDataFrameOffset();
+	uint offset = mpeg.getFrameOffset(0);
 
 	f_ui.boxInfo->setTitle( QString("MPEG %1 Layer %2").arg(mpeg.getVersion()).arg(mpeg.getLayer()) );
 

@@ -29,11 +29,29 @@ std::cout << std::hex;
 		{
 			m_mpegOffset = i;
 			m_mpeg = QSharedPointer<CMPEGStream>(CMPEGStream::gen(pData, size));
-std::cout << "MPEG: " << i << " +" << m_mpeg->getSize() << std::endl;
+
+			// Check the last frame for the invalid data
+			ASSERT(m_mpeg->getFrameCount());
+			uint uLast = m_mpeg->getFrameCount() - 1;
+			uint uLastOffset = m_mpegOffset + m_mpeg->getFrameOffset(uLast);
+
+			for(uint o = 0, n = m_mpeg->getFrameSize(uLast); n; o++, n--)
+			{
+				if( CAPE::isValidHeader(f_data + uLastOffset + o, n) )
+				{
+					uint s = m_mpeg->truncate(1);
+					ASSERT(s == 1);
+					i += o;
+					size -= o;
+					break;
+				}
+			}
+std::cout << "MPEG: " << m_mpegOffset << " +" << m_mpeg->getSize() << std::endl;
 			i += m_mpeg->getSize();
 			size -= m_mpeg->getSize();
 			continue;
 		}
+
 		if(m_tag2.isNull())
 		{
 			uint uTagSize;
