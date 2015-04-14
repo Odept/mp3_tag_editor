@@ -82,17 +82,28 @@ CMP3::CMP3(const uchar* f_data, unsigned long long f_size):
 		}
 
 		// ID3v1
-		if(size == CID3v1::getSize())
+		if(m_tag.isNull())
 		{
-			m_tag = QSharedPointer<CID3v1>(CID3v1::gen(pData, size));
+			if(CID3v1* pTag = CID3v1::gen(pData, size))
+			{
+				if(size != CID3v1::getSize())
+					TRACE(QString("MP3: ID3v1 tag @ invalid offset 0x") +
+						  QString::number(i, 16).toUpper() +
+						  QString(" (0x") +
+						  QString::number(f_size - CID3v1::getSize(), 16).toUpper() +
+						  QString("is expected)"));
 
-			TRACE(QString("MP3: ID3v1 @ 0x") +
-				  QString::number(i, 16).toUpper() +
-				  QString(" +0x") +
-				  QString::number(m_tag->getSize(), 16).toUpper());
+				m_tag = QSharedPointer<CID3v1>(pTag);
 
-			i += m_tag->getSize();
-			size -= m_tag->getSize();
+				TRACE(QString("MP3: ID3v1 @ 0x") +
+					  QString::number(i, 16).toUpper() +
+					  QString(" +0x") +
+					  QString::number(m_tag->getSize(), 16).toUpper());
+
+				i += m_tag->getSize();
+				size -= m_tag->getSize();
+				continue;
+			}
 		}
 
 		// APE
