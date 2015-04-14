@@ -31,7 +31,9 @@ public:
 	Error(const QString& f_brief, const QString& f_full):
 		m_brief(f_brief),
 		m_full(f_full)
-	{}
+	{
+		TRACE( QString("ERROR (%1): %2").arg(m_brief).arg(m_full) );
+	}
 	const QString& brief() const { return m_brief; }
 	const QString& full() const { return m_full; }
 private:
