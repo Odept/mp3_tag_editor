@@ -53,7 +53,7 @@ void Window::createJob(const QString& f_path)
 	TRACE("Window: create job");
 
 	ASSERT(m_job.isNull());
-	NEW_EXCEPT(m_job = QSharedPointer<CJobSingle>(new CJobSingle(f_path)), this);
+	NEW_EXCEPT(m_job = QSharedPointer<CJobSingle>(new CJobSingle(this, f_path)), this);
 	if(m_job.isNull())
 	{
 		TRACE("Window: cancel create job");

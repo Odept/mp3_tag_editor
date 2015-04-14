@@ -13,7 +13,7 @@ class CMPEGStream;
 class CMP3
 {
 public:
-	CMP3(const uchar* f_data, unsigned long long f_size);
+	CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size);
 	CMP3() {}
 	virtual ~CMP3() {}
 

@@ -7,7 +7,9 @@
 #include "External/inc/ape.h"
 #include "External/inc/mpeg.h"
 
-#include <iostream>
+#include <QMessageBox>
+
+
 class EMP3 : public Error
 {
 public:
@@ -17,7 +19,7 @@ public:
 };
 
 
-CMP3::CMP3(const uchar* f_data, unsigned long long f_size):
+CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 	m_tag2Offset(-1),
 	m_mpegOffset(f_size)
 {
@@ -40,14 +42,20 @@ CMP3::CMP3(const uchar* f_data, unsigned long long f_size):
 
 			for(uint o = 0, n = m_mpeg->getFrameSize(uLast); n; o++, n--)
 			{
-				if( CAPE::isValidHeader(f_data + uLastOffset + o, n) )
-				{
-					uint s = m_mpeg->truncate(1);
-					ASSERT(s == 1);
-					i += o;
-					size -= o;
-					break;
-				}
+				if( !CAPE::isValidHeader(f_data + uLastOffset + o, n) )
+					continue;
+
+				QString msg = QString("APE tag is found in the last MPEG data frame at offset 0x") +
+							  QString::number(uLastOffset + o, 16).toUpper() +
+							  QString(". The APE tag will be kept, while the frame will be discarded");
+				TRACE(QString("WARNING: ") + msg);
+				QMessageBox::warning(pParent, "Invalid MP3 layout", msg);
+
+				uint s = m_mpeg->truncate(1);
+				ASSERT(s == 1);
+				i += o;
+				size -= o;
+				break;
 			}
 
 			TRACE(QString("MP3: MPEG stream @ 0x") +
@@ -87,11 +95,15 @@ CMP3::CMP3(const uchar* f_data, unsigned long long f_size):
 			if(CID3v1* pTag = CID3v1::gen(pData, size))
 			{
 				if(size != CID3v1::getSize())
-					TRACE(QString("MP3: ID3v1 tag @ invalid offset 0x") +
-						  QString::number(i, 16).toUpper() +
-						  QString(" (0x") +
-						  QString::number(f_size - CID3v1::getSize(), 16).toUpper() +
-						  QString("is expected)"));
+				{
+					QString msg = QString("ID3v1 tag is found at invalid offset 0x") +
+								  QString::number(i, 16).toUpper() +
+								  QString(" (0x") +
+								  QString::number(f_size - CID3v1::getSize(), 16).toUpper() +
+								  QString(" is expected)");
+					TRACE(QString("WARNING: ") + msg);
+					QMessageBox::warning(pParent, "Invalid MP3 layout", msg);
+				}
 
 				m_tag = QSharedPointer<CID3v1>(pTag);
 

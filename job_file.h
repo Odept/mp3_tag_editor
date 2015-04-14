@@ -10,7 +10,7 @@ public:
 	virtual ~CJob() {}
 
 protected:
-	CJob(const QString& f_path);
+	CJob(QWidget* pParent, const QString& f_path);
 
 protected:
 	QString m_path;
@@ -22,7 +22,7 @@ protected:
 class CJobSingle : public CJob
 {
 public:
-	CJobSingle(const QString& f_path): CJob(f_path) {}
+	CJobSingle(QWidget* pParent, const QString& f_path): CJob(pParent, f_path) {}
 
 	void updateTag1UI  (Ui::Window& f_ui) const;
 	void updateTag2UI  (Ui::Window& f_ui) const;

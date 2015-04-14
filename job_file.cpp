@@ -24,7 +24,7 @@ public:
 };
 
 // ============================================================================
-CJob::CJob(const QString& f_path):
+CJob::CJob(QWidget* pParent, const QString& f_path):
 	m_path(f_path)
 {
 	QFileInfo fi(m_path);
@@ -40,7 +40,7 @@ CJob::CJob(const QString& f_path):
 	if(!pData)
 		throw EFile( QString("Failed to map \"%1\"").arg(f_path) );
 
-	m_mp3 = CMP3(pData, file.size());
+	m_mp3 = CMP3(pParent, pData, file.size());
 }
 
 // ============================================================================
