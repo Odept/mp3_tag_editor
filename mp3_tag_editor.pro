@@ -29,7 +29,7 @@ HEADERS += window.h \
 	textedit.h \
 	job_file.h \
 	mp3.h \
-	error.h
+	debug.h
 
 FORMS += window.ui
 

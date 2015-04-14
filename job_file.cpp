@@ -4,7 +4,7 @@
 #include "job_file.h"
 
 #include "mp3.h"
-#include "error.h"
+#include "debug.h"
 
 #include "External/inc/id3v1.h"
 #include "External/inc/id3v2.h"
@@ -52,6 +52,8 @@ void CJobSingle::updateControl(TextEdit& f_control, const QString& f_str) const
 
 void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 {
+	TRACE("Job: update ID3v1 UI");
+
 	CID3v1& tag = m_mp3.tagV1();
 
 	uint uTrack = tag.isV11() ? tag.getTrack() : 0;
@@ -71,6 +73,8 @@ void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 
 void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 {
+	TRACE("Job: update ID3v2 UI");
+
 	CID3v2& tag = m_mp3.tagV2();
 
 	f_ui.labelTagOffset->setText( QString("@ %1 bytes").arg(m_mp3.tag2Offset()) );
@@ -101,6 +105,8 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 
 void CJobSingle::updateMPEGInfo(Ui::Window& f_ui) const
 {
+	TRACE("Job: update MPEG info");
+
 	const CMPEGStream& mpeg = m_mp3.mpeg();
 
 	uint offset = mpeg.getFrameOffset(0);

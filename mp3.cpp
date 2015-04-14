@@ -1,6 +1,6 @@
 #include "mp3.h"
 
-#include "error.h"
+#include "debug.h"
 
 #include "External/inc/id3v1.h"
 #include "External/inc/id3v2.h"
@@ -21,10 +21,13 @@ CMP3::CMP3(const uchar* f_data, unsigned long long f_size):
 	m_tag2Offset(-1),
 	m_mpegOffset(f_size)
 {
+	TRACE( QString("MP3: init (%1 bytes)").arg(f_size) );
+
 	for(unsigned long long i = 0, size = f_size; i < f_size;)
 	{
 		const uchar* pData = f_data + i;
-std::cout << std::hex;
+
+		// MPEG stream
 		if(m_mpeg.isNull() && CMPEGStream::verifyFrameSequence(pData, size))
 		{
 			m_mpegOffset = i;
@@ -46,12 +49,18 @@ std::cout << std::hex;
 					break;
 				}
 			}
-std::cout << "MPEG: " << m_mpegOffset << " +" << m_mpeg->getSize() << std::endl;
+
+			TRACE(QString("MP3: MPEG stream @ 0x") +
+				  QString::number(m_mpegOffset, 16).toUpper() +
+				  QString(" +0x") +
+				  QString::number(m_mpeg->getSize(), 16).toUpper());
+
 			i += m_mpeg->getSize();
 			size -= m_mpeg->getSize();
 			continue;
 		}
 
+		// ID3v2
 		if(m_tag2.isNull())
 		{
 			uint uTagSize;
@@ -60,12 +69,33 @@ std::cout << "MPEG: " << m_mpegOffset << " +" << m_mpeg->getSize() << std::endl;
 			{
 				m_tag2Offset = i;
 				m_tag2 = QSharedPointer<CID3v2>(pTag);
-std::cout << "V2: " << i << " +" << uTagSize << std::endl;
+
+				TRACE(QString("MP3: ID3v2 @ 0x") +
+					  QString::number(m_tag2Offset, 16).toUpper() +
+					  QString(" +0x") +
+					  QString::number(uTagSize, 16).toUpper());
+
 				i += uTagSize;
 				size -= uTagSize;
 				continue;
 			}
 		}
+
+		// ID3v1
+		if(size == CID3v1::getSize())
+		{
+			m_tag = QSharedPointer<CID3v1>(CID3v1::gen(pData, size));
+
+			TRACE(QString("MP3: ID3v1 @ 0x") +
+				  QString::number(i, 16).toUpper() +
+				  QString(" +0x") +
+				  QString::number(m_tag->getSize(), 16).toUpper());
+
+			i += m_tag->getSize();
+			size -= m_tag->getSize();
+		}
+
+		// APE
 		if(m_ape.isNull())
 		{
 			uint uTagSize;
@@ -73,20 +103,19 @@ std::cout << "V2: " << i << " +" << uTagSize << std::endl;
 			if(pTag)
 			{
 				m_ape = QSharedPointer<CAPE>(pTag);
-std::cout << "APE: " << i << " +" << uTagSize << std::endl;
+
+				TRACE(QString("MP3: APE @ 0x") +
+					  QString::number(i, 16).toUpper() +
+					  QString(" +0x") +
+					  QString::number(uTagSize, 16).toUpper());
+
 				i += uTagSize;
 				size -= uTagSize;
 				continue;
 			}
 		}
-		if(size == CID3v1::getSize())
-		{
-			m_tag = QSharedPointer<CID3v1>(CID3v1::gen(pData, size));
-std::cout << "V1: " << i << " +" << CID3v1::getSize() << std::endl;
-			i += CID3v1::getSize();
-			size -= CID3v1::getSize();
-		}
 
+		// Verify NULLs
 		if(f_data[i] != 0)
 			throw EMP3(QString("Unsupported data @ offset %1 (0x").arg(i) +
 					   QString::number(i, 16).toUpper() +
@@ -99,7 +128,13 @@ std::cout << "V1: " << i << " +" << CID3v1::getSize() << std::endl;
 		throw EMP3("Unsupported MP3 file");
 
 	if(m_tag.isNull())
+	{
+		TRACE("MP3: create empty ID3v1 tag");
 		m_tag = QSharedPointer<CID3v1>(CID3v1::create());
+	}
 	if(m_tag2.isNull())
+	{
+		TRACE("MP3: create empty ID3v2 tag");
 		m_tag2 = QSharedPointer<CID3v2>(CID3v2::create());
+	}
 }

@@ -2,7 +2,7 @@
 #include "ui_window.h"
 
 #include "job_file.h"
-#include "error.h"
+#include "debug.h"
 
 #include <QDragEnterEvent>
 #include <QMimeData>
@@ -17,6 +17,8 @@ Window::Window(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::Window)
 {
+	TRACE("Window: create");
+
 	ui->setupUi(this);
 
 	ui->comboGenre->setLabel(ui->labelBoxGenre);
@@ -41,16 +43,22 @@ Window::Window(QWidget *parent) :
 
 Window::~Window()
 {
+	TRACE("Window: destroy");
 	delete ui;
 }
 
 // ============================================================================
 void Window::createJob(const QString& f_path)
 {
+	TRACE("Window: create job");
+
 	ASSERT(m_job.isNull());
 	NEW_EXCEPT(m_job = QSharedPointer<CJobSingle>(new CJobSingle(f_path)), this);
 	if(m_job.isNull())
+	{
+		TRACE("Window: cancel create job");
 		return;
+	}
 
 	resetFields(true);
 	onTagSelectionChange(ui->comboTag->currentIndex());
@@ -61,6 +69,8 @@ bool Window::destroyJob()
 {
 	if(m_job.isNull())
 		return true;
+
+	TRACE("Window: destroy job");
 
 	//if( !question )
 	//	return false;
@@ -77,20 +87,29 @@ void Window::dragEnterEvent(QDragEnterEvent* pEvent)
 {
 	const QMimeData* pMime = pEvent->mimeData();
 	if(!pMime->hasUrls())
+	{
+		TRACE("Drag: no URLs");
 		return;
+	}
 
 	const QList<QUrl> urls = pMime->urls();
+	TRACE(QString("Drag: %1 URL(s)").arg(urls.size()));
+
 	for(int i = 0; i < urls.size(); i++)
 	{
 		const QUrl& url = urls[i];
 		if(!url.isLocalFile())
+		{
+			TRACE( QString("Drag: not a local file (%1\)").arg(url.fileName()) );
 			continue;
+		}
 		QFileInfo fi(url.fileName());
 		if(!fi.isDir() && (fi.suffix() == QString("mp3")))
 		{
 			pEvent->acceptProposedAction();
 			return;
 		}
+		TRACE( QString("Drag: skip non-MP3 file (%1)").arg(url.fileName()) );
 	}
 }
 
@@ -100,8 +119,13 @@ void Window::dropEvent(QDropEvent* pEvent)
 	const int nURLs = urls.size();
 	if(nURLs == 1)
 	{
+		TRACE( QString("Drop: single file (%1)").arg(urls[0].toLocalFile()) );
+
 		if(!destroyJob())
+		{
+			TRACE("Drop: cancel (active)");
 			return;
+		}
 
 		ui->tabsMode->setCurrentIndex(0);
 		QFileInfo fi(urls[0].toLocalFile());
@@ -109,6 +133,8 @@ void Window::dropEvent(QDropEvent* pEvent)
 	}
 	else
 	{
+		TRACE( QString("Drop: %1 files").arg(nURLs) );
+
 		QStringList files;
 		ui->tabsMode->setCurrentIndex(1);
 		for(int i = 0; i < nURLs; i++)
@@ -128,6 +154,7 @@ void Window::dropEvent(QDropEvent* pEvent)
 
 void Window::on_actionOpen_triggered()
 {
+	TRACE("Action::Open");
 	//files = QFileDialog::getOpenFileNames(this, QString("Select music files..."), "",
 	//									  QString("MP3 Files (*.mp3);;All Files (*.*)"),
 	//									  0, QFileDialog::ReadOnly);
@@ -137,19 +164,26 @@ void Window::on_actionOpen_triggered()
 	dialog.setViewMode(QFileDialog::Detail);
 	dialog.setOptions(QFileDialog::ReadOnly);
 	if(!dialog.exec())
+	{
+		TRACE("Action::Open: cancel");
 		return;
+	}
 
 	QStringList files = dialog.selectedFiles();
 	if(files.size() == 1)
 	{
 		if(!destroyJob())
+		{
+			TRACE("Action::Open: cancel (active)");
 			return;
+		}
 		createJob(files[0]);
 	}
 }
 
 void Window::on_actionQuit_triggered()
 {
+	TRACE("Action::Quit");
 	//if(m_job /*|| m_job_batch*/)
 	// question
 	this->close();
@@ -165,6 +199,8 @@ void Window::resetField(TextEdit& f_control, bool f_enabled)
 
 void Window::resetFields(bool f_enabled)
 {
+	TRACE( QString("Window: reset fields (%1)").arg(f_enabled) );
+
 	ui->comboTag->setEnabled(f_enabled);
 
 	// Clear ID3v1 fields
@@ -200,6 +236,8 @@ void Window::resetFields(bool f_enabled)
 
 void Window::resetMPEGInfo()
 {
+	TRACE("Window: reset MPEG info");
+
 	ui->boxInfo->setVisible(false);
 	ui->boxInfo->setTitle( QString("MPEG Info") );
 
@@ -216,6 +254,8 @@ void Window::resetMPEGInfo()
 
 void Window::onTagSelectionChange(int f_index)
 {
+	TRACE( QString("Window: tag selection changed to %1").arg(f_index) );
+
 	bool isTabV2 = (f_index != 1);
 
 	ui->labelTagOffset->setVisible(f_index == 2);

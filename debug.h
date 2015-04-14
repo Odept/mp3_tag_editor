@@ -1,5 +1,5 @@
-#ifndef __ERROR_H__
-#define __ERROR_H__
+#ifndef __DEBUG_H__
+#define __DEBUG_H__
 
 #pragma once
 
@@ -9,6 +9,9 @@
 
 #define ASSERT(expr) if(!(expr)) abort()
 
+#define TRACE(msg) do { qDebug() << (QString(__FILE__) + ":" + QString::number(__LINE__) + ": " + (msg)); } while(0)
+
+// ============================================================================
 #define NEW_EXCEPT(expr, pParent) \
 	do { \
 		try \
@@ -36,4 +39,4 @@ private:
 	const QString m_full;
 };
 
-#endif // __ERROR_H__
+#endif // __DEBUG_H__
