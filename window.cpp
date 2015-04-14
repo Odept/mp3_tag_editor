@@ -100,7 +100,7 @@ void Window::dragEnterEvent(QDragEnterEvent* pEvent)
 		const QUrl& url = urls[i];
 		if(!url.isLocalFile())
 		{
-			TRACE( QString("Drag: not a local file (%1\)").arg(url.fileName()) );
+			TRACE( QString("Drag: not a local file (%1)").arg(url.fileName()) );
 			continue;
 		}
 		QFileInfo fi(url.fileName());
@@ -117,6 +117,7 @@ void Window::dropEvent(QDropEvent* pEvent)
 {
 	const QList<QUrl> urls = pEvent->mimeData()->urls();
 	const int nURLs = urls.size();
+
 	if(nURLs == 1)
 	{
 		TRACE( QString("Drop: single file (%1)").arg(urls[0].toLocalFile()) );
@@ -149,6 +150,8 @@ void Window::dropEvent(QDropEvent* pEvent)
 		//if(files.size())
 		//  m_job = QJobBatch(*this, files);
 	}
+
+	pEvent->acceptProposedAction();
 }
 
 
