@@ -5,6 +5,7 @@
 #include "External/inc/id3v1.h"
 #include "External/inc/id3v2.h"
 #include "External/inc/ape.h"
+#include "External/inc/lyrics.h"
 #include "External/inc/mpeg.h"
 
 #include <QMessageBox>
@@ -72,8 +73,7 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 		if(m_tag2.isNull())
 		{
 			uint uTagSize;
-			CID3v2* pTag = CID3v2::gen(pData, size, &uTagSize);
-			if(pTag)
+			if(CID3v2* pTag = CID3v2::gen(pData, size, &uTagSize))
 			{
 				m_tag2Offset = i;
 				m_tag2 = QSharedPointer<CID3v2>(pTag);
@@ -122,12 +122,30 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 		if(m_ape.isNull())
 		{
 			uint uTagSize;
-			CAPE* pTag = CAPE::gen(pData, size, &uTagSize);
-			if(pTag)
+			if(CAPE* pTag = CAPE::gen(pData, size, &uTagSize))
 			{
 				m_ape = QSharedPointer<CAPE>(pTag);
 
 				TRACE(QString("MP3: APE @ 0x") +
+					  QString::number(i, 16).toUpper() +
+					  QString(" +0x") +
+					  QString::number(uTagSize, 16).toUpper());
+
+				i += uTagSize;
+				size -= uTagSize;
+				continue;
+			}
+		}
+
+		// Lyrics
+		if(m_lyrics.isNull())
+		{
+			uint uTagSize;
+			if(CLyrics* pTag = CLyrics::gen(pData, size, &uTagSize))
+			{
+				m_lyrics = QSharedPointer<CLyrics>(pTag);
+
+				TRACE(QString("MP3: Lyrics @ 0x") +
 					  QString::number(i, 16).toUpper() +
 					  QString(" +0x") +
 					  QString::number(uTagSize, 16).toUpper());
