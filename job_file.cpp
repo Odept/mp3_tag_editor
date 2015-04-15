@@ -91,7 +91,7 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 	updateControl(*f_ui.editComment, tag.getComment()    );
 
 	if(tag.isExtendedGenre())
-		abort();
+		ASSERT(!"Extended Genre");
 	f_ui.comboGenre->setCurrentText( QString::fromStdString(tag.getGenre()) );
 	f_ui.comboGenre->trackChanges(true);
 

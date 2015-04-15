@@ -7,7 +7,7 @@
 #include <QDebug>
 
 
-#define ASSERT(expr) if(!(expr)) abort()
+#define ASSERT(expr) do { if(!(expr)) { TRACE( QString("ASSERT(%1)").arg(#expr) ); abort(); } } while(0)
 
 #define TRACE(msg) do { qDebug() << (QString(__FILE__) + ":" + QString::number(__LINE__) + ": " + (msg)); } while(0)
 
