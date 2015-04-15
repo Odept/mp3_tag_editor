@@ -92,7 +92,11 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 
 	if(tag.isExtendedGenre())
 		ASSERT(!"Extended Genre");
-	f_ui.comboGenre->setCurrentText( QString::fromStdString(tag.getGenre()) );
+	int i = tag.getGenreIndex();
+	if(i == -1)
+		f_ui.comboGenre->setCurrentText( QString::fromStdString(tag.getGenre()) );
+	else
+		f_ui.comboGenre->setCurrentIndex(i);
 	f_ui.comboGenre->trackChanges(true);
 
 	updateControl(*f_ui.editComposer  , tag.getComposer()  );
