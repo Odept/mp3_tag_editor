@@ -2,6 +2,7 @@
 #define __WINDOW_H__
 
 #include <QMainWindow>
+#include <QStandardItemModel>
 
 
 namespace Ui
@@ -42,6 +43,8 @@ private:
 	Ui::Window *ui;
 
 	QSharedPointer<CJobSingle> m_job;
+
+	QStandardItemModel m_modelFrames;
 };
 
 #endif // __WINDOW_H__

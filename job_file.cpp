@@ -105,6 +105,11 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 	updateControl(*f_ui.editCopyright , tag.getCopyright() );
 	updateControl(*f_ui.editURL       , tag.getURL()       );
 	updateControl(*f_ui.editEncoded   , tag.getEncoded()   );
+
+	QStandardItemModel* pModel = static_cast<QStandardItemModel*>(f_ui.listFrames->model());
+	ASSERT(pModel);
+	for(auto str: tag.getUnknownFrames())
+		pModel->appendRow(new QStandardItem(QString::fromStdString(str)));
 }
 
 void CJobSingle::updateMPEGInfo(Ui::Window& f_ui) const

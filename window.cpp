@@ -37,6 +37,8 @@ Window::Window(QWidget *parent) :
 	connect(ui->comboTag, SIGNAL(currentIndexChanged (int)),
 					this, SLOT  (onTagSelectionChange(int)));
 
+	ui->listFrames->setModel(&m_modelFrames);
+
 	resetFields();
 	resetMPEGInfo();
 }
@@ -233,6 +235,9 @@ void Window::resetFields(bool f_enabled)
 	resetField(*ui->editEncoded   , f_enabled);
 
 	//ui->graphArt
+
+	ui->listFrames->setEnabled(f_enabled);
+	m_modelFrames.clear();
 }
 
 
