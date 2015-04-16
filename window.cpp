@@ -104,7 +104,7 @@ void Window::dragEnterEvent(QDragEnterEvent* pEvent)
 			continue;
 		}
 		QFileInfo fi(url.fileName());
-		if(!fi.isDir() && (fi.suffix() == QString("mp3")))
+		if(!fi.isDir() && !fi.suffix().compare("mp3", Qt::CaseInsensitive))
 		{
 			pEvent->acceptProposedAction();
 			return;
@@ -143,7 +143,7 @@ void Window::dropEvent(QDropEvent* pEvent)
 			if(!urls[i].isLocalFile())
 				continue;
 			QFileInfo fi(urls[i].toLocalFile());
-			if(fi.isDir() || (fi.suffix() != QString("mp3")))
+			if(fi.isDir() || fi.suffix().compare("mp3", Qt::CaseInsensitive))
 				continue;
 			files.append(fi.absoluteFilePath());
 		}
