@@ -985,6 +985,9 @@
            <height>73</height>
           </rect>
          </property>
+         <property name="cursor" stdset="0">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
         </widget>
         <widget class="QListView" name="listFrames">
          <property name="geometry">
@@ -1055,6 +1058,10 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionClose"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave"/>
+    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -1062,6 +1069,7 @@
      <string>Edit</string>
     </property>
     <addaction name="actionTagCopy"/>
+    <addaction name="actionTagPaste"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -1101,6 +1109,9 @@
    <property name="text">
     <string>Exit</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
   </action>
   <action name="actionOpen">
    <property name="icon">
@@ -1112,6 +1123,9 @@
    </property>
    <property name="toolTip">
     <string>Open an MP3 file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionTagCopy">
@@ -1125,6 +1139,9 @@
    <property name="toolTip">
     <string>Copy selected tag</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
   </action>
   <action name="actionSave">
    <property name="icon">
@@ -1137,6 +1154,9 @@
    <property name="toolTip">
     <string>Save changes</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionTagPaste">
    <property name="icon">
@@ -1148,6 +1168,17 @@
    </property>
    <property name="toolTip">
     <string>Paste to the current tag</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
  </widget>

@@ -145,6 +145,4 @@ void CJobSingle::updateMPEGInfo(Ui::Window& f_ui) const
 	else
 		str = time.toString("ss.zzz");
 	f_ui.labelLen->setText( time.toString(str) );
-
-	f_ui.boxInfo->setVisible(true);
 }

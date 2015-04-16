@@ -32,12 +32,16 @@ private:
 	void resetFields(bool f_enabled = false);
 	void resetMPEGInfo();
 
+	void updateMenuAndToolBar();
+
 private slots:
 	void onTagSelectionChange(int f_index);
 
 	void on_actionOpen_triggered();
 
 	void on_actionQuit_triggered();
+
+	void on_actionClose_triggered();
 
 private:
 	Ui::Window *ui;

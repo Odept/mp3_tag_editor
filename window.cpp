@@ -39,6 +39,7 @@ Window::Window(QWidget *parent) :
 
 	ui->listFrames->setModel(&m_modelFrames);
 
+	updateMenuAndToolBar();
 	resetFields();
 	resetMPEGInfo();
 }
@@ -64,7 +65,11 @@ void Window::createJob(const QString& f_path)
 
 	resetFields(true);
 	onTagSelectionChange(ui->comboTag->currentIndex());
+
+	ui->boxInfo->setVisible(true);
 	m_job->updateMPEGInfo(*ui);
+
+	updateMenuAndToolBar();
 }
 
 bool Window::destroyJob()
@@ -78,6 +83,7 @@ bool Window::destroyJob()
 	//	return false;
 	m_job.clear();
 
+	updateMenuAndToolBar();
 	resetFields();
 	resetMPEGInfo();
 
@@ -186,6 +192,13 @@ void Window::on_actionOpen_triggered()
 	}
 }
 
+void Window::on_actionClose_triggered()
+{
+	TRACE("Action::Close");
+	if(!destroyJob())
+		TRACE("Action::Close: cancel (active)");
+}
+
 void Window::on_actionQuit_triggered()
 {
 	TRACE("Action::Quit");
@@ -234,7 +247,7 @@ void Window::resetFields(bool f_enabled)
 	resetField(*ui->editURL       , f_enabled);
 	resetField(*ui->editEncoded   , f_enabled);
 
-	//ui->graphArt
+	ui->graphArt->setEnabled(f_enabled);
 
 	ui->listFrames->setEnabled(f_enabled);
 	m_modelFrames.clear();
@@ -256,6 +269,15 @@ void Window::resetMPEGInfo()
 	ui->labelOffset->clear();
 	ui->labelFrames->clear();
 	ui->labelLen->clear();
+}
+
+
+void Window::updateMenuAndToolBar()
+{
+	ui->actionClose		->setEnabled(!m_job.isNull());
+	ui->actionSave		->setEnabled(!m_job.isNull());
+	ui->actionTagCopy	->setEnabled(!m_job.isNull());
+	ui->actionTagPaste	->setEnabled(!m_job.isNull());
 }
 
 
