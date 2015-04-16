@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="save">icons/disk.ico</file>
+        <file alias="paste">icons/paste_plain.ico</file>
+        <file alias="copy">icons/page_white_copy.ico</file>
+        <file alias="open">icons/page_white_add.ico</file>
+    </qresource>
+</RCC>

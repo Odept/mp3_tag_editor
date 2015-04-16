@@ -39,3 +39,6 @@ LIBS += $$PWD/External/lib/tag.a \
 macx {
 	LIBS += -liconv
 }
+
+RESOURCES += \
+    resource.qrc
