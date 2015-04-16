@@ -2,6 +2,7 @@
 #include "ui_window.h"
 
 #include "job_file.h"
+#include "settings.h"
 #include "debug.h"
 
 #include <QDragEnterEvent>
@@ -9,6 +10,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QDesktopWidget>
 
 #include "External/inc/genre.h"
 
@@ -42,11 +44,46 @@ Window::Window(QWidget *parent) :
 	updateMenuAndToolBar();
 	resetFields();
 	resetMPEGInfo();
+
+	// Settings
+	CSettings s;
+	QRect r = s.getWindowRect();
+
+	QRect screen = QApplication::desktop()->screenGeometry();
+	if(!r.width() || !r.height())
+	{
+		uint cx = geometry(). width();
+		uint cy = geometry().height();
+		uint x = (screen. width() - cx) / 2;
+		uint y = (screen.height() - cy) / 2;
+		TRACE( QString("Window: set initial pos to center (%1; %2) %3x%4").
+			   arg(x).arg(y).arg(cx).arg(cy) );
+		move(x, y);
+	}
+	else
+	{
+		uint cx = qMin((uint)r. width(), (uint)screen. width());
+		uint cy = qMin((uint)r.height(), (uint)screen.height());
+
+		uint x = qMin((uint)screen. width() - cx, (uint)qMax(r.x(), 0));
+		uint y = qMin((uint)screen.height() - cy, (uint)qMax(r.y(), 0));
+
+		TRACE( QString("Window: set initial pos to (%1; %2) %3x%4").
+					   arg(x).arg(y).arg(cx).arg(cy) );
+		resize(cx, cy);
+		move(x, y);
+	}
 }
 
 Window::~Window()
 {
 	TRACE("Window: destroy");
+
+	CSettings s;
+
+	QRect r(x() + 10, y() + 10, width(), height());
+	s.setWindowRect(r);
+
 	delete ui;
 }
 
