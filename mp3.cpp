@@ -158,9 +158,23 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 
 		// Verify NULLs
 		if(f_data[i] != 0)
+		{
+			if( CMPEGStream::isIncompleteFrame(pData, size) )
+			{
+				QString msg = QString("Unexpected end of frame at offset 0x") +
+							  QString::number(i, 16).toUpper() +
+							  QString(". The incomplete frame (%1 bytes) will be discarded").arg(size);
+				TRACE(QString("WARNING: ") + msg);
+				QMessageBox::warning(pParent, "Invalid MP3 layout", msg);
+
+				//i += size;
+				//size = 0;
+				break;
+			}
 			throw EMP3(QString("Unsupported data @ offset %1 (0x").arg(i) +
 					   QString::number(i, 16).toUpper() +
 					   QString(")"));
+		}
 		i++;
 		size--;
 	}
