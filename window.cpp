@@ -39,6 +39,9 @@ Window::Window(QWidget *parent) :
 					this, SLOT  (onTagSelectionChange(int)));
 
 	ui->graphArt->setScene(&m_graphScene);
+	connect(ui->graphArt, SIGNAL(clicked()),
+					this, SLOT  (onImageClick()));
+
 	ui->listFrames->setModel(&m_modelFrames);
 
 	updateMenuAndToolBar();
@@ -199,10 +202,10 @@ void Window::dropEvent(QDropEvent* pEvent)
 	pEvent->acceptProposedAction();
 }
 
-
+// ====================================
 void Window::on_actionOpen_triggered()
 {
-	TRACE("Action::Open");
+	TRACE("Window(action): open");
 	//files = QFileDialog::getOpenFileNames(this, QString("Select music files..."), "",
 	//									  QString("MP3 Files (*.mp3);;All Files (*.*)"),
 	//									  0, QFileDialog::ReadOnly);
@@ -213,7 +216,7 @@ void Window::on_actionOpen_triggered()
 	dialog.setOptions(QFileDialog::ReadOnly);
 	if(!dialog.exec())
 	{
-		TRACE("Action::Open: cancel");
+		TRACE("Window(action): cancel open");
 		return;
 	}
 
@@ -222,7 +225,7 @@ void Window::on_actionOpen_triggered()
 	{
 		if(!destroyJob())
 		{
-			TRACE("Action::Open: cancel (active)");
+			TRACE("Window(action): cancel open (active)");
 			return;
 		}
 		createJob(files[0]);
@@ -231,17 +234,22 @@ void Window::on_actionOpen_triggered()
 
 void Window::on_actionClose_triggered()
 {
-	TRACE("Action::Close");
+	TRACE("Window(action): close");
 	if(!destroyJob())
-		TRACE("Action::Close: cancel (active)");
+		TRACE("Window(action): cancel close (active)");
 }
 
 void Window::on_actionQuit_triggered()
 {
-	TRACE("Action::Quit");
+	TRACE("Window(action): quit");
 	//if(m_job /*|| m_job_batch*/)
 	// question
 	this->close();
+}
+
+void Window::onImageClick()
+{
+	TRACE("Window: album art clicked");
 }
 
 // ============================================================================

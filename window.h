@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QGraphicsScene>
+#include <QGraphicsView>
 
 
 namespace Ui
@@ -39,10 +40,10 @@ private slots:
 	void onTagSelectionChange(int f_index);
 
 	void on_actionOpen_triggered();
-
 	void on_actionQuit_triggered();
-
 	void on_actionClose_triggered();
+
+	void onImageClick();
 
 private:
 	Ui::Window *ui;
@@ -51,6 +52,21 @@ private:
 
 	QGraphicsScene m_graphScene;
 	QStandardItemModel m_modelFrames;
+};
+
+
+class CImageView : public QGraphicsView
+{
+	Q_OBJECT
+
+public:
+	explicit CImageView(QWidget* parent = 0): QGraphicsView(parent) {}
+
+protected:
+	void mousePressEvent(QMouseEvent*) { emit clicked(); }
+
+signals:
+	void clicked();
 };
 
 #endif // __WINDOW_H__

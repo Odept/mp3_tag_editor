@@ -976,7 +976,7 @@
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
-        <widget class="QGraphicsView" name="graphArt">
+        <widget class="CImageView" name="graphArt">
          <property name="geometry">
           <rect>
            <x>88</x>
@@ -1217,6 +1217,11 @@
    <class>GenreBox</class>
    <extends>QComboBox</extends>
    <header>textedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CImageView</class>
+   <extends>QGraphicsView</extends>
+   <header>window.h</header>
   </customwidget>
  </customwidgets>
  <resources>
