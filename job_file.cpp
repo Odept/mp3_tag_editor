@@ -13,6 +13,7 @@
 #include <QFileInfo>
 #include <QDateTime>
 #include <QtMath>
+#include <QGraphicsPixmapItem>
 
 
 class EFile : public Error
@@ -106,10 +107,48 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 	updateControl(*f_ui.editURL       , tag.getURL()       );
 	updateControl(*f_ui.editEncoded   , tag.getEncoded()   );
 
+	// Unknown Frames
 	QStandardItemModel* pModel = static_cast<QStandardItemModel*>(f_ui.listFrames->model());
 	ASSERT(pModel);
 	for(auto str: tag.getUnknownFrames())
 		pModel->appendRow(new QStandardItem(QString::fromStdString(str)));
+
+	// Image
+	const std::vector<uchar>& image = tag.getPictureData();
+	if(image.empty())
+		return;
+
+	QGraphicsScene* pScene = f_ui.graphArt->scene();
+	ASSERT(pScene);
+
+	QPixmap px;
+	if( !px.loadFromData(&image[0], image.size()) )
+	{
+		TRACE("ERROR: failed to load the image data");
+		return;
+	}
+	ASSERT(!px.isNull());
+
+	int cx = f_ui.graphArt->childrenRect().width();
+	int cy = f_ui.graphArt->childrenRect().height();
+	if(px.width() > px.height())
+	{
+		TRACE(QString("Job: scale image %1x%2 -> %3x%4 by width").
+			  arg(px.width()).arg(px.height()).
+			  arg(cx).arg(cy));
+		px = px.scaledToWidth(cx, Qt::SmoothTransformation);
+	}
+	else
+	{
+		TRACE(QString("Job: scale image %1x%2 -> %3x%4 by height").
+			  arg(px.width()).arg(px.height()).
+			  arg(cx).arg(cy));
+		px = px.scaledToHeight(cy, Qt::SmoothTransformation);
+	}
+	ASSERT(!px.isNull());
+
+	ASSERT(pScene->items().isEmpty());
+	pScene->addItem(new QGraphicsPixmapItem(px));
 }
 
 void CJobSingle::updateMPEGInfo(Ui::Window& f_ui) const

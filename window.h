@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStandardItemModel>
+#include <QGraphicsScene>
 
 
 namespace Ui
@@ -48,6 +49,7 @@ private:
 
 	QSharedPointer<CJobSingle> m_job;
 
+	QGraphicsScene m_graphScene;
 	QStandardItemModel m_modelFrames;
 };
 

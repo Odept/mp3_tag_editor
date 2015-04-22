@@ -30,7 +30,6 @@ Window::Window(QWidget *parent) :
 		if(!*szGenre)
 			break;
 		QString genre(szGenre);
-		//qDebug() << QString("%1: %2").arg(i).arg(genre);
 		ui->comboGenre->addItem(genre);
 	}
 
@@ -39,6 +38,7 @@ Window::Window(QWidget *parent) :
 	connect(ui->comboTag, SIGNAL(currentIndexChanged (int)),
 					this, SLOT  (onTagSelectionChange(int)));
 
+	ui->graphArt->setScene(&m_graphScene);
 	ui->listFrames->setModel(&m_modelFrames);
 
 	updateMenuAndToolBar();
@@ -285,6 +285,7 @@ void Window::resetFields(bool f_enabled)
 	resetField(*ui->editEncoded   , f_enabled);
 
 	ui->graphArt->setEnabled(f_enabled);
+	m_graphScene.clear();
 
 	ui->listFrames->setEnabled(f_enabled);
 	m_modelFrames.clear();
