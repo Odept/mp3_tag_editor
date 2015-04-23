@@ -83,10 +83,8 @@ Window::~Window()
 {
 	TRACE("Window: destroy");
 
-	CSettings s;
-
 	QRect r(x() + 10, y() + 10, width(), height());
-	s.setWindowRect(r);
+	CSettings().setWindowRect(r);
 
 	delete ui;
 }
@@ -210,16 +208,22 @@ void Window::dropEvent(QDropEvent* pEvent)
 // ====================================
 void Window::on_actionOpen_triggered()
 {
-	TRACE("Window(action): open");
+	CSettings s;
+	QString dir = s.getOpenDir();
+
+	TRACE("Window(action): open @ " + dir);
 	//files = QFileDialog::getOpenFileNames(this, QString("Select music files..."), "",
 	//									  QString("MP3 Files (*.mp3);;All Files (*.*)"),
 	//									  0, QFileDialog::ReadOnly);
-	QFileDialog dialog(this, QString("Select music files..."));
+	QFileDialog dialog(this, QString("Select music files..."), dir);
 	dialog.setFileMode(QFileDialog::ExistingFiles);
 	dialog.setNameFilter(tr("MP3 Files (*.mp3);;All Files (*.*)"));
 	dialog.setViewMode(QFileDialog::Detail);
 	dialog.setOptions(QFileDialog::ReadOnly);
-	if(!dialog.exec())
+
+	int res = dialog.exec();
+	s.setOpenDir(dialog.directory().absolutePath());
+	if(res != QDialog::Accepted)
 	{
 		TRACE("Window(action): cancel open");
 		return;
