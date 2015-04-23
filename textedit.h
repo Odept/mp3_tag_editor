@@ -11,7 +11,12 @@ class ChangeHighlighter : public QObject
 	Q_OBJECT
 
 public:
-	explicit ChangeHighlighter(QWidget* parent = 0);
+	explicit ChangeHighlighter(QFrame* f_frame):
+		m_frame(f_frame),
+		m_highlight(false),
+		m_changed(false)
+	{}
+	void setFrame(QFrame* f_frame) { m_frame = f_frame; }
 
 	void track(bool f_track);
 
@@ -22,12 +27,7 @@ private:
 	ChangeHighlighter();
 
 private:
-	QWidget* m_parent;
-
-//	QPalette m_palDefault;
-//	QPalette m_palHightlight;
-	QFont m_fontDefault;
-	QFont m_fontHighlight;
+	QFrame* m_frame;
 
 	bool m_highlight;
 	bool m_changed;
@@ -54,6 +54,7 @@ class GenreBox : public QComboBox
 
 public:
 	explicit GenreBox(QWidget* parent = 0);
+	void setFrame(QFrame* f_frame) { m_tracker.setFrame(f_frame); }
 	void setLabel(QLabel* f_label) { m_label = f_label; }
 
 	void trackChanges(bool f_track) { m_tracker.track(f_track); }

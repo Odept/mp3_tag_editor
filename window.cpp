@@ -24,7 +24,18 @@ Window::Window(QWidget *parent) :
 
 	ui->setupUi(this);
 
+	// Tag Selector
+	QStringList tags( QList<QString>() << "Combined" << "ID3v1" << "ID3v2" );
+	ui->comboTag->addItems(tags);
+	connect(ui->comboTag, SIGNAL(currentIndexChanged (int)),
+					this, SLOT  (onTagSelectionChange(int)));
+
+	// Genre Controls
+	ui->frameGenre->setFrameShape(QFrame::Shape::NoFrame);
+
+	ui->comboGenre->setFrame(ui->frameGenre);
 	ui->comboGenre->setLabel(ui->labelBoxGenre);
+
 	for(unsigned int i = 0;; i++)
 	{
 		const char* szGenre = CGenre::get(i);
@@ -34,17 +45,15 @@ Window::Window(QWidget *parent) :
 		ui->comboGenre->addItem(genre);
 	}
 
-	QStringList tags( QList<QString>() << "Combined" << "ID3v1" << "ID3v2" );
-	ui->comboTag->addItems(tags);
-	connect(ui->comboTag, SIGNAL(currentIndexChanged (int)),
-					this, SLOT  (onTagSelectionChange(int)));
-
+	// Album Art
 	ui->graphArt->setScene(&m_graphScene);
 	connect(ui->graphArt, SIGNAL(clicked()),
 					this, SLOT  (onImageClick()));
 
+	// Unknown Frames
 	ui->listFrames->setModel(&m_modelFrames);
 
+	// Common
 	updateMenuAndToolBar();
 	resetFields();
 	resetMPEGInfo();

@@ -79,11 +79,6 @@
            <height>25</height>
           </rect>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
          </property>
@@ -124,11 +119,6 @@
            <width>52</width>
            <height>25</height>
           </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
          </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
@@ -171,11 +161,6 @@
            <height>25</height>
           </rect>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
          </property>
@@ -217,11 +202,6 @@
            <height>25</height>
           </rect>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
          </property>
@@ -246,11 +226,6 @@
            <width>350</width>
            <height>25</height>
           </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
          </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
@@ -277,11 +252,6 @@
            <height>25</height>
           </rect>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
          </property>
@@ -306,11 +276,6 @@
            <width>350</width>
            <height>25</height>
           </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
          </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
@@ -427,11 +392,6 @@
            <height>25</height>
           </rect>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
          </property>
@@ -461,19 +421,6 @@
           <string>Genre</string>
          </property>
         </widget>
-        <widget class="GenreBox" name="comboGenre">
-         <property name="geometry">
-          <rect>
-           <x>264</x>
-           <y>192</y>
-           <width>140</width>
-           <height>26</height>
-          </rect>
-         </property>
-         <property name="currentIndex">
-          <number>-1</number>
-         </property>
-        </widget>
         <widget class="TextEdit" name="editComment">
          <property name="geometry">
           <rect>
@@ -482,11 +429,6 @@
            <width>350</width>
            <height>65</height>
           </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
          </property>
          <property name="inputMethodHints">
           <set>Qt::ImhMultiLine</set>
@@ -529,11 +471,6 @@
            <height>25</height>
           </rect>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
          </property>
@@ -574,11 +511,6 @@
            <width>350</width>
            <height>25</height>
           </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
          </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
@@ -634,6 +566,32 @@
            <height>25</height>
           </rect>
          </property>
+        </widget>
+        <widget class="QFrame" name="frameGenre">
+         <property name="geometry">
+          <rect>
+           <x>264</x>
+           <y>192</y>
+           <width>140</width>
+           <height>26</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="GenreBox" name="comboGenre">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>140</width>
+            <height>26</height>
+           </rect>
+          </property>
+         </widget>
         </widget>
        </widget>
        <widget class="QGroupBox" name="boxInfo">
@@ -820,11 +778,6 @@
            <height>25</height>
           </rect>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
          </property>
@@ -849,11 +802,6 @@
            <width>238</width>
            <height>25</height>
           </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
          </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
@@ -880,11 +828,6 @@
            <height>25</height>
           </rect>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
          </property>
@@ -909,11 +852,6 @@
            <width>238</width>
            <height>25</height>
           </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
          </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>

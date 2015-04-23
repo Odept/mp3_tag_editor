@@ -1,33 +1,22 @@
 #include "textedit.h"
 
+#include "debug.h"
 
-ChangeHighlighter::ChangeHighlighter(QWidget* parent):
-	m_parent(parent),
-//	m_palDefault(m_parent->palette()),
-//	m_palHightlight(m_palDefault),
-	m_fontDefault(m_parent->font()),
-	m_fontHighlight(m_fontDefault),
-	m_highlight(false),
-	m_changed(false)
-{
-	//m_palHightlight.setColor(QPalette::Text, QColor(255, 255, 0, 128));
-	m_fontHighlight.setBold(true);
-}
 
 void ChangeHighlighter::track(bool f_track)
 {
 	m_changed = false;
 	m_highlight = f_track;
-	//m_parent->setPalette(m_palDefault);
-	m_parent->setFont(m_fontDefault);
+	ASSERT(m_frame);
+	m_frame->setStyleSheet( QString() );
 }
 
 void ChangeHighlighter::onChange()
 {
 	if(!m_highlight || m_changed)
 		return;
-	//m_parent->setPalette(m_palHightlight);
-	m_parent->setFont(m_fontHighlight);
+	ASSERT(m_frame);
+	m_frame->setStyleSheet( QString("#%1 { border: 1px solid yellow; }").arg(m_frame->objectName()) );
 	m_changed = true;
 }
 
@@ -42,7 +31,7 @@ TextEdit::TextEdit(QWidget* parent):
 // ============================================================================
 GenreBox::GenreBox(QWidget* parent):
 	QComboBox(parent),
-	m_tracker((QComboBox*)this)
+	m_tracker(NULL)
 {
 	// Label actions
 	connect((QComboBox*)this, SIGNAL(editTextChanged(const QString&)),
