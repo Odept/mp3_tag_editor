@@ -86,6 +86,9 @@ Window::Window(QWidget *parent) :
 		resize(cx, cy);
 		move(x, y);
 	}
+
+	ui->comboTag->setCurrentIndex(0);
+	ui->comboTag->emit currentIndexChanged(0);
 }
 
 Window::~Window()
@@ -114,8 +117,8 @@ void Window::createJob(const QString& f_path)
 	ui->editPath->setText(f_path);
 	ui->editPath->horizontalScrollBar()->setValue(ui->editPath->horizontalScrollBar()->maximum());
 
-	resetFields(true);
-	onTagSelectionChange(ui->comboTag->currentIndex());
+	// Fields are reset and updated by the following call
+	ui->comboTag->emit currentIndexChanged(ui->comboTag->currentIndex());
 
 	ui->boxInfo->setVisible(true);
 	m_job->updateMPEGInfo(*ui);
@@ -295,7 +298,6 @@ void Window::resetFields(bool f_enabled)
 	ui->comboGenre->setEnabled(f_enabled);
 	ui->comboGenre->trackChanges(false);
 	ui->comboGenre->setCurrentIndex(-1);
-	//ui->labelGenre->clear();
 
 	// Clear ID3v2 fields
 	ui->labelTagOffset->clear();
