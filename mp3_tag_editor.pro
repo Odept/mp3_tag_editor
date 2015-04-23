@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = mp3_tag_editor
+TARGET = "MP3 Tag Editor"
 TEMPLATE = app
 
 CONFIG += c++11
@@ -42,4 +42,4 @@ macx {
 }
 
 RESOURCES += \
-    resource.qrc
+	resource.qrc
