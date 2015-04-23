@@ -59,14 +59,13 @@ GenreBox::GenreBox(QWidget* parent):
 
 void GenreBox::onTextChange(const QString& str)
 {
-	int i = findText(str);
-	if(i == -1)
-		m_label->clear();
-	else
-		onSelectionChange(i);
+	onSelectionChange( findText(str) );
 }
 
 void GenreBox::onSelectionChange(int f_index)
 {
-	m_label->setText( QString("(%1)").arg(f_index) );
+	if(f_index == -1)
+		m_label->clear();
+	else
+		m_label->setText( QString("(%1)").arg(f_index) );
 }
