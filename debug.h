@@ -29,7 +29,7 @@ static inline void trace(const QString& f_msg, const QString& f_file, const QStr
 		} \
 		catch(const Error& e) \
 		{ \
-			QMessageBox::critical((pParent), e.brief(), e.full()); \
+			CMessageBox::critical((pParent), e.brief(), e.full()); \
 		} \
 	} while(0)
 

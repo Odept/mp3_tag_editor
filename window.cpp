@@ -3,12 +3,12 @@
 
 #include "job_file.h"
 #include "settings.h"
+#include "messagebox.h"
 #include "debug.h"
 
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QFileInfo>
-#include <QMessageBox>
 #include <QFileDialog>
 #include <QDesktopWidget>
 #include <QScrollBar>

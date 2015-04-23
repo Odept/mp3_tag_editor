@@ -31,7 +31,8 @@ HEADERS += window.h \
 	job_file.h \
 	mp3.h \
 	debug.h \
-	settings.h
+	settings.h \
+	messagebox.h
 
 FORMS += window.ui
 

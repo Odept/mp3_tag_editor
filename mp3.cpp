@@ -1,14 +1,13 @@
 #include "mp3.h"
 
 #include "debug.h"
+#include "messagebox.h"
 
 #include "External/inc/id3v1.h"
 #include "External/inc/id3v2.h"
 #include "External/inc/ape.h"
 #include "External/inc/lyrics.h"
 #include "External/inc/mpeg.h"
-
-#include <QMessageBox>
 
 
 class EMP3 : public Error
@@ -50,7 +49,7 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 							  QString::number(uLastOffset + o, 16).toUpper() +
 							  QString(". The APE tag will be kept, while the frame will be discarded");
 				TRACE(QString("WARNING: ") + msg);
-				QMessageBox::warning(pParent, "Invalid MP3 layout", msg);
+				CMessageBox::warning(pParent, "Invalid MP3 layout", msg);
 
 				uint s = m_mpeg->truncate(1);
 				ASSERT(s == 1);
@@ -102,7 +101,7 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 								  QString::number(f_size - CID3v1::getSize(), 16).toUpper() +
 								  QString(" is expected)");
 					TRACE(QString("WARNING: ") + msg);
-					QMessageBox::warning(pParent, "Invalid MP3 layout", msg);
+					CMessageBox::warning(pParent, "Invalid MP3 layout", msg);
 				}
 
 				m_tag = QSharedPointer<CID3v1>(pTag);
@@ -165,7 +164,7 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 							  QString::number(i, 16).toUpper() +
 							  QString(". The incomplete frame (%1 bytes) will be discarded").arg(size);
 				TRACE(QString("WARNING: ") + msg);
-				QMessageBox::warning(pParent, "Invalid MP3 layout", msg);
+				CMessageBox::warning(pParent, "Invalid MP3 layout", msg);
 
 				//i += size;
 				//size = 0;
