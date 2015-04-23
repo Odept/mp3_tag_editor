@@ -45,111 +45,146 @@ CJob::CJob(QWidget* pParent, const QString& f_path):
 }
 
 // ============================================================================
-void CJobSingle::updateControl(TextEdit& f_control, const QString& f_str) const
+bool CJobSingle::save() const
 {
-	f_control.setText(f_str);
-	f_control.trackChanges(true);
+	TRACE("Job: save");
+	return true;
+}
+
+
+void CJobSingle::trackTag1UI(Ui::Window& f_ui) const
+{
+	f_ui.editTrack		->trackChanges(true);
+	f_ui.editYear		->trackChanges(true);
+	f_ui.editTitle		->trackChanges(true);
+	f_ui.editArtist		->trackChanges(true);
+	f_ui.editAlbum		->trackChanges(true);
+	f_ui.editComment	->trackChanges(true);
+	f_ui.comboGenre		->trackChanges(true);
 }
 
 void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 {
 	TRACE("Job: update ID3v1 UI");
 
-	CID3v1& tag = m_mp3.tagV1();
+	if(const CID3v1* pTag = m_mp3.tagV1())
+	{
+		uint uTrack = pTag->isV11() ? pTag->getTrack() : 0;
+		f_ui.editTrack->setText(uTrack ? QString::number(uTrack) : QString());
 
-	uint uTrack = tag.isV11() ? tag.getTrack() : 0;
-	updateControl(*f_ui.editTrack, uTrack ? QString::number(uTrack) : QString(""));
+		uint uYear = pTag->getYear();
+		f_ui.editYear->setText(uYear ? QString::number(uYear) : QString());
 
-	uint uYear = tag.getYear();
-	updateControl(*f_ui.editYear, uYear ? QString::number(uYear) : QString(""));
+		f_ui.editTitle	->setText( QString(pTag->getTitle())	);
+		f_ui.editArtist	->setText( QString(pTag->getArtist())	);
+		f_ui.editAlbum	->setText( QString(pTag->getAlbum())	);
+		f_ui.editComment->setText( QString(pTag->getComment())	);
 
-	updateControl(*f_ui.editTitle  , QString(tag.getTitle  ()));
-	updateControl(*f_ui.editArtist , QString(tag.getArtist ()));
-	updateControl(*f_ui.editAlbum  , QString(tag.getAlbum  ()));
-	updateControl(*f_ui.editComment, QString(tag.getComment()));
+		f_ui.comboGenre->setCurrentIndex( pTag->getGenreIndex() );
+	}
 
-	f_ui.comboGenre->setCurrentIndex( tag.getGenreIndex() );
-	f_ui.comboGenre->trackChanges(true);
+	trackTag1UI(f_ui);
+}
+
+
+void CJobSingle::trackTag2UI(Ui::Window& f_ui) const
+{
+	f_ui.editDisc		->trackChanges(true);
+	f_ui.editBPM		->trackChanges(true);
+
+	trackTag1UI(f_ui);
+
+	f_ui.editAArtist	->trackChanges(true);
+
+	f_ui.editComposer	->trackChanges(true);
+	f_ui.editPublisher	->trackChanges(true);
+	f_ui.editOrigArtist	->trackChanges(true);
+	f_ui.editCopyright	->trackChanges(true);
+	f_ui.editURL		->trackChanges(true);
+	f_ui.editEncoded	->trackChanges(true);
 }
 
 void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 {
 	TRACE("Job: update ID3v2 UI");
 
-	CID3v2& tag = m_mp3.tagV2();
-
-	f_ui.labelTagOffset->setText( QString("@ %1 bytes").arg(m_mp3.tag2Offset()) );
-
-	updateControl(*f_ui.editTrack, tag.getTrack());
-	updateControl(*f_ui.editDisc , tag.getDisc() );
-	updateControl(*f_ui.editBPM  , tag.getBPM()  );
-
-	updateControl(*f_ui.editTitle  , tag.getTitle()      );
-	updateControl(*f_ui.editArtist , tag.getArtist()     );
-	updateControl(*f_ui.editAlbum  , tag.getAlbum()      );
-	updateControl(*f_ui.editYear   , tag.getYear()       );
-	updateControl(*f_ui.editAArtist, tag.getAlbumArtist());
-	updateControl(*f_ui.editComment, tag.getComment()    );
-
-	if(tag.isExtendedGenre())
-		ASSERT(!"Extended Genre");
-	int i = tag.getGenreIndex();
-	if(i == -1)
-		f_ui.comboGenre->setCurrentText( QString::fromStdString(tag.getGenre()) );
-	else
-		f_ui.comboGenre->setCurrentIndex(i);
-	f_ui.comboGenre->trackChanges(true);
-
-	updateControl(*f_ui.editComposer  , tag.getComposer()  );
-	updateControl(*f_ui.editPublisher , tag.getPublisher() );
-	updateControl(*f_ui.editOrigArtist, tag.getOrigArtist());
-	updateControl(*f_ui.editCopyright , tag.getCopyright() );
-	updateControl(*f_ui.editURL       , tag.getURL()       );
-	updateControl(*f_ui.editEncoded   , tag.getEncoded()   );
-
-	// Unknown Frames
-	QStandardItemModel* pModel = static_cast<QStandardItemModel*>(f_ui.listFrames->model());
-	ASSERT(pModel);
-	for(auto str: tag.getUnknownFrames())
-		pModel->appendRow(new QStandardItem(QString::fromStdString(str)));
-
-	// Image
-	const std::vector<uchar>& image = tag.getPictureData();
-	if(image.empty())
-		return;
-
-	QGraphicsScene* pScene = f_ui.graphArt->scene();
-	ASSERT(pScene);
-
-	QPixmap px;
-	if( !px.loadFromData(&image[0], image.size()) )
+	if(const CID3v2* pTag = m_mp3.tagV2())
 	{
-		TRACE("ERROR: failed to load the image data");
-		return;
-	}
-	ASSERT(!px.isNull());
+		f_ui.labelTagOffset->setText( QString("@ %1 bytes").arg(m_mp3.tag2Offset()) );
 
-	int cx = f_ui.graphArt->childrenRect().width();
-	int cy = f_ui.graphArt->childrenRect().height();
-	if(px.width() > px.height())
-	{
-		TRACE(QString("Job: scale image %1x%2 -> %3x%4 by width").
-			  arg(px.width()).arg(px.height()).
-			  arg(cx).arg(cy));
-		px = px.scaledToWidth(cx, Qt::SmoothTransformation);
-	}
-	else
-	{
-		TRACE(QString("Job: scale image %1x%2 -> %3x%4 by height").
-			  arg(px.width()).arg(px.height()).
-			  arg(cx).arg(cy));
-		px = px.scaledToHeight(cy, Qt::SmoothTransformation);
-	}
-	ASSERT(!px.isNull());
+		f_ui.editTrack		->setText( QString::fromStdString(pTag->getTrack())			);
+		f_ui.editDisc		->setText( QString::fromStdString(pTag->getDisc())			);
+		f_ui.editBPM		->setText( QString::fromStdString(pTag->getBPM())			);
 
-	ASSERT(pScene->items().isEmpty());
-	pScene->addItem(new QGraphicsPixmapItem(px));
+		f_ui.editTitle		->setText( QString::fromStdString(pTag->getTitle())			);
+		f_ui.editArtist		->setText( QString::fromStdString(pTag->getArtist())		);
+		f_ui.editAlbum		->setText( QString::fromStdString(pTag->getAlbum())			);
+		f_ui.editYear		->setText( QString::fromStdString(pTag->getYear())			);
+		f_ui.editAArtist	->setText( QString::fromStdString(pTag->getAlbumArtist())	);
+		f_ui.editComment	->setText( QString::fromStdString(pTag->getComment())		);
+
+		if(pTag->isExtendedGenre())
+			ASSERT(!"Extended Genre");
+		int i = pTag->getGenreIndex();
+		if(i == -1)
+			f_ui.comboGenre->setCurrentText( QString::fromStdString(pTag->getGenre()) );
+		else
+			f_ui.comboGenre->setCurrentIndex(i);
+
+		f_ui.editComposer	->setText( QString::fromStdString(pTag->getComposer())		);
+		f_ui.editPublisher	->setText( QString::fromStdString(pTag->getPublisher())		);
+		f_ui.editOrigArtist	->setText( QString::fromStdString(pTag->getOrigArtist())	);
+		f_ui.editCopyright	->setText( QString::fromStdString(pTag->getCopyright())		);
+		f_ui.editURL		->setText( QString::fromStdString(pTag->getURL())			);
+		f_ui.editEncoded	->setText( QString::fromStdString(pTag->getEncoded())		);
+
+		// Image
+		const std::vector<uchar>& image = pTag->getPictureData();
+		if(image.empty())
+			return;
+
+		QGraphicsScene* pScene = f_ui.graphArt->scene();
+		ASSERT(pScene);
+
+		QPixmap px;
+		if( !px.loadFromData(&image[0], image.size()) )
+		{
+			TRACE("ERROR: failed to load the image data");
+			return;
+		}
+		ASSERT(!px.isNull());
+
+		int cx = f_ui.graphArt->childrenRect().width();
+		int cy = f_ui.graphArt->childrenRect().height();
+		if(px.width() > px.height())
+		{
+			TRACE(QString("Job: scale image %1x%2 -> %3x%4 by width").
+				  arg(px.width()).arg(px.height()).
+				  arg(cx).arg(cy));
+			px = px.scaledToWidth(cx, Qt::SmoothTransformation);
+		}
+		else
+		{
+			TRACE(QString("Job: scale image %1x%2 -> %3x%4 by height").
+				  arg(px.width()).arg(px.height()).
+				  arg(cx).arg(cy));
+			px = px.scaledToHeight(cy, Qt::SmoothTransformation);
+		}
+		ASSERT(!px.isNull());
+
+		ASSERT(pScene->items().isEmpty());
+		pScene->addItem(new QGraphicsPixmapItem(px));
+
+		// Unknown Frames
+		QStandardItemModel* pModel = static_cast<QStandardItemModel*>(f_ui.listFrames->model());
+		ASSERT(pModel);
+		for(auto str: pTag->getUnknownFrames())
+			pModel->appendRow(new QStandardItem(QString::fromStdString(str)));
+	}
+
+	trackTag2UI(f_ui);
 }
+
 
 void CJobSingle::updateMPEGInfo(Ui::Window& f_ui) const
 {

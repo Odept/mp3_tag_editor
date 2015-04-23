@@ -181,7 +181,7 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 	if(m_mpeg.isNull())
 		throw EMP3("Unsupported MP3 file");
 
-	if(m_tag.isNull())
+/*	if(m_tag.isNull())
 	{
 		TRACE("MP3: create empty ID3v1 tag");
 		m_tag = QSharedPointer<CID3v1>(CID3v1::create());
@@ -191,4 +191,5 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 		TRACE("MP3: create empty ID3v2 tag");
 		m_tag2 = QSharedPointer<CID3v2>(CID3v2::create());
 	}
+*/
 }

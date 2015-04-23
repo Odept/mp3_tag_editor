@@ -1,6 +1,8 @@
 #ifndef __MP3_H__
 #define __MP3_H__
 
+#include "debug.h"
+
 #include <QSharedPointer>
 
 
@@ -18,9 +20,13 @@ public:
 	CMP3() {}
 	virtual ~CMP3() {}
 
-	CID3v1& tagV1() const { return *m_tag;  }
-	CID3v2& tagV2() const { return *m_tag2; }
-	int tag2Offset() const { return m_tag2Offset; }
+	CID3v1* tagV1() const { return m_tag.data();  }
+	CID3v2* tagV2() const { return m_tag2.data(); }
+	int tag2Offset() const
+	{
+		ASSERT(!m_tag2.isNull());
+		return m_tag2Offset;
+	}
 
 	const CMPEGStream& mpeg() const { return *m_mpeg; }
 	uint firstFrameOffset() const { return m_mpegOffset; }

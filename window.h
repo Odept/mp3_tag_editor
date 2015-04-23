@@ -45,6 +45,8 @@ private slots:
 
 	void onImageClick();
 
+	void on_actionSave_triggered();
+
 private:
 	Ui::Window *ui;
 
