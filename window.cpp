@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDesktopWidget>
+#include <QScrollBar>
 
 #include "External/inc/genre.h"
 
@@ -103,6 +104,9 @@ void Window::createJob(const QString& f_path)
 		return;
 	}
 
+	ui->editPath->setText(f_path);
+	ui->editPath->horizontalScrollBar()->setValue(ui->editPath->horizontalScrollBar()->maximum());
+
 	resetFields(true);
 	onTagSelectionChange(ui->comboTag->currentIndex());
 
@@ -123,6 +127,7 @@ bool Window::destroyJob()
 	//	return false;
 	m_job.clear();
 
+	ui->editPath->clear();
 	updateMenuAndToolBar();
 	resetFields();
 	resetMPEGInfo();
