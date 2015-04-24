@@ -13,12 +13,13 @@ class ChangeHighlighter : public QObject
 public:
 	explicit ChangeHighlighter(QFrame* f_frame):
 		m_frame(f_frame),
-		m_highlight(false),
+		m_track(false),
 		m_changed(false)
 	{}
 	void setFrame(QFrame* f_frame) { m_frame = f_frame; }
 
 	void track(bool f_track);
+	bool isChanged() const { return m_changed; }
 
 public slots:
 	void onChange();
@@ -29,7 +30,7 @@ private:
 private:
 	QFrame* m_frame;
 
-	bool m_highlight;
+	bool m_track;
 	bool m_changed;
 };
 
@@ -42,6 +43,7 @@ public:
 	explicit TextEdit(QWidget* parent = 0);
 
 	void trackChanges(bool f_track) { m_tracker.track(f_track); }
+	bool isChanged() const { return m_tracker.isChanged(); }
 
 private:
 	ChangeHighlighter m_tracker;
@@ -58,6 +60,7 @@ public:
 	void setLabel(QLabel* f_label) { m_label = f_label; }
 
 	void trackChanges(bool f_track) { m_tracker.track(f_track); }
+	bool isChanged() const { return m_tracker.isChanged(); }
 
 private slots:
 	void onTextChange(const QString& str);

@@ -6,14 +6,14 @@
 void ChangeHighlighter::track(bool f_track)
 {
 	m_changed = false;
-	m_highlight = f_track;
+	m_track = f_track;
 	ASSERT(m_frame);
 	m_frame->setStyleSheet( QString() );
 }
 
 void ChangeHighlighter::onChange()
 {
-	if(!m_highlight || m_changed)
+	if(!m_track || m_changed)
 		return;
 	ASSERT(m_frame);
 	m_frame->setStyleSheet( QString("#%1 { border: 1px solid yellow; }").arg(m_frame->objectName()) );

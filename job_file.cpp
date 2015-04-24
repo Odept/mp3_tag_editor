@@ -54,13 +54,13 @@ bool CJobSingle::save() const
 
 void CJobSingle::trackTag1UI(Ui::Window& f_ui) const
 {
-	f_ui.editTrack		->trackChanges(true);
-	f_ui.editYear		->trackChanges(true);
-	f_ui.editTitle		->trackChanges(true);
-	f_ui.editArtist		->trackChanges(true);
-	f_ui.editAlbum		->trackChanges(true);
-	f_ui.editComment	->trackChanges(true);
-	f_ui.comboGenre		->trackChanges(true);
+	f_ui.editTrack	->trackChanges(true);
+	f_ui.editYear	->trackChanges(true);
+	f_ui.editTitle	->trackChanges(true);
+	f_ui.editArtist	->trackChanges(true);
+	f_ui.editAlbum	->trackChanges(true);
+	f_ui.editComment->trackChanges(true);
+	f_ui.comboGenre	->trackChanges(true);
 }
 
 void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
@@ -108,7 +108,7 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 {
 	TRACE("Job: update ID3v2 UI");
 
-	if(const CID3v2* pTag = m_mp3.tagV2())
+	while(const CID3v2* pTag = m_mp3.tagV2())
 	{
 		f_ui.labelTagOffset->setText( QString("@ %1 bytes").arg(m_mp3.tag2Offset()) );
 
@@ -141,7 +141,7 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 		// Image
 		const std::vector<uchar>& image = pTag->getPictureData();
 		if(image.empty())
-			return;
+			break;
 
 		QGraphicsScene* pScene = f_ui.graphArt->scene();
 		ASSERT(pScene);
@@ -150,7 +150,7 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 		if( !px.loadFromData(&image[0], image.size()) )
 		{
 			TRACE("ERROR: failed to load the image data");
-			return;
+			break;
 		}
 		ASSERT(!px.isNull());
 
@@ -180,6 +180,7 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 		ASSERT(pModel);
 		for(auto str: pTag->getUnknownFrames())
 			pModel->appendRow(new QStandardItem(QString::fromStdString(str)));
+		break;
 	}
 
 	trackTag2UI(f_ui);
