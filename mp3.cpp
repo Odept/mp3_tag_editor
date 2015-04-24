@@ -181,6 +181,37 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 	if(m_mpeg.isNull())
 		throw EMP3("Unsupported MP3 file");
 
+	// Ask for the APE and the lyrics tags if present
+	if(!m_ape.isNull())
+	{
+		QString msg("The MP3 contains an APE tag. Should it be kept or be removed?");
+		TRACE(QString("QUESTION: ") + msg);
+		QMessageBox::StandardButton res = CMessageBox::questionTag(pParent, "APE Tag", msg);
+
+		if(res == CMessageBox::TagRemove)
+		{
+			TRACE( QString("MP3: remove APE tag (0x") +
+				   QString::number(res, 16).toUpper() +
+				   QString(")"));
+			m_ape.clear();
+		}
+	}
+
+	if(!m_lyrics.isNull())
+	{
+		QString msg("The MP3 contains a lyrics tag. Should it be kept or be removed?");
+		TRACE(QString("QUESTION: ") + msg);
+		QMessageBox::StandardButton res = CMessageBox::questionTag(pParent, "APE Tag", msg);
+
+		if(res == CMessageBox::TagRemove)
+		{
+			TRACE( QString("MP3: remove lyrics tag (0x") +
+				   QString::number(res, 16).toUpper() +
+				   QString(")"));
+			m_ape.clear();
+		}
+	}
+
 /*	if(m_tag.isNull())
 	{
 		TRACE("MP3: create empty ID3v1 tag");
