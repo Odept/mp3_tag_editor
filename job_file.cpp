@@ -55,10 +55,10 @@ bool CJobSingle::save() const
 void CJobSingle::trackTag1UI(Ui::Window& f_ui) const
 {
 	f_ui.editTrack	->trackChanges(true);
-	f_ui.editYear	->trackChanges(true);
 	f_ui.editTitle	->trackChanges(true);
 	f_ui.editArtist	->trackChanges(true);
 	f_ui.editAlbum	->trackChanges(true);
+	f_ui.editYear	->trackChanges(true);
 	f_ui.editComment->trackChanges(true);
 	f_ui.comboGenre	->trackChanges(true);
 }
@@ -72,9 +72,7 @@ void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 		uint uTrack = pTag->isV11() ? pTag->getTrack() : 0;
 		f_ui.editTrack->setText(uTrack ? QString::number(uTrack) : QString());
 
-		uint uYear = pTag->getYear();
-		f_ui.editYear->setText(uYear ? QString::number(uYear) : QString());
-
+		f_ui.editYear	->setText( QString(pTag->getYear())		);
 		f_ui.editTitle	->setText( QString(pTag->getTitle())	);
 		f_ui.editArtist	->setText( QString(pTag->getArtist())	);
 		f_ui.editAlbum	->setText( QString(pTag->getAlbum())	);
