@@ -257,7 +257,7 @@ void Window::on_actionSave_triggered()
 {
 	TRACE("Window(action): save");
 	ASSERT(!m_job.isNull());
-	m_job->save();
+	m_job->save(*ui);
 }
 
 void Window::on_actionClose_triggered()

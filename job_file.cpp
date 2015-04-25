@@ -45,9 +45,99 @@ CJob::CJob(QWidget* pParent, const QString& f_path):
 }
 
 // ============================================================================
-bool CJobSingle::save() const
+template<typename T>
+void CJobSingle::syncControl(const T& f_control,
+							 const QString& f_text,
+							 const QString& f_name,
+							 std::function<bool (const QString&)> f_lambda)
+{
+	if( !f_control.isChanged() )
+		return;
+
+	TRACE( QString("Sync: %1 \"%2\"").arg(f_name).arg(f_text) );
+	if( !f_lambda(f_text) )
+		TRACE("WARNING: the value seems to be truncated during set");
+}
+
+void CJobSingle::syncTag1UI(Ui::Window& f_ui)
+{
+	TRACE("Job: sync ID3v1 UI");
+
+	QString track	= f_ui.editTrack	->toPlainText();
+	QString title	= f_ui.editTitle	->toPlainText();
+	QString artist	= f_ui.editArtist	->toPlainText();
+	QString album	= f_ui.editAlbum	->toPlainText();
+	QString year	= f_ui.editYear		->toPlainText();
+	QString comment	= f_ui.editComment	->toPlainText();
+	QString genre	= f_ui.comboGenre	->currentText();
+
+	/**
+	 * Remove the ID3v1 tag if all the fields are empty
+	 * create it otherwise if necessary
+	 */
+	if(track	.isEmpty() &&
+	   title	.isEmpty() &&
+	   artist	.isEmpty() &&
+	   album	.isEmpty() &&
+	   year		.isEmpty() &&
+	   comment	.isEmpty() &&
+	   genre	.isEmpty())
+	{
+		if(m_mp3.tagV1())
+			m_mp3.removeTagV1();
+		return;
+	}
+	else if(!m_mp3.tagV1())
+		m_mp3.createTagV1();
+
+#define LAMBDA_SYNC(Name) auto sync##Name = [this](const QString& text)
+	LAMBDA_SYNC(Track)
+	{
+		bool ok; int t = text.toInt(&ok);
+		return m_mp3.tagV1()->setTrack(ok ? t : (uint)~0);
+	};
+	LAMBDA_SYNC(  Title)	{ return m_mp3.tagV1()->setTitle  ( text.toLatin1().constData() );	};
+	LAMBDA_SYNC( Artist)	{ return m_mp3.tagV1()->setArtist ( text.toLatin1().constData() );	};
+	LAMBDA_SYNC(  Album)	{ return m_mp3.tagV1()->setAlbum  ( text.toLatin1().constData() );	};
+	LAMBDA_SYNC(   Year)	{ return m_mp3.tagV1()->setYear   ( text.toLatin1().constData() );	};
+	LAMBDA_SYNC(Comment)	{ return m_mp3.tagV1()->setComment( text.toLatin1().constData() );	};
+	LAMBDA_SYNC(  Genre)
+	{
+		int i = text.toInt();
+		return m_mp3.tagV1()->setGenreIndex((i < 0) ? (uint)~0 : i);
+	};
+#undef LAMBDA_SYNC
+
+	syncControl<TextEdit>(*f_ui.editTrack  , track	, "track"	, syncTrack		);
+	syncControl<TextEdit>(*f_ui.editTitle  , title	, "title"	, syncTitle		);
+	syncControl<TextEdit>(*f_ui.editArtist , artist	, "artist"	, syncArtist	);
+	syncControl<TextEdit>(*f_ui.editAlbum  , album	, "album"	, syncAlbum		);
+	syncControl<TextEdit>(*f_ui.editYear   , year	, "year"	, syncYear		);
+	syncControl<TextEdit>(*f_ui.editComment, comment, "comment"	, syncComment	);
+
+	// Not efficient but OK for now (int->str here and str->int in the lambda)
+	genre = QString::number( f_ui.comboGenre->findText(genre) );
+	syncControl<GenreBox>(*f_ui.comboGenre , genre	, "genre"	, syncGenre		);
+}
+
+void CJobSingle::syncTag2UI(Ui::Window& f_ui)
+{
+	TRACE("Job: sync ID3v2 UI");
+}
+
+void CJobSingle::syncTagUI(Ui::Window& f_ui)
+{
+	uint uiTag = f_ui.comboTag->currentIndex();
+	if(!uiTag || uiTag == 1)
+		syncTag1UI(f_ui);
+	if(!uiTag || uiTag == 2)
+		syncTag2UI(f_ui);
+}
+
+bool CJobSingle::save(Ui::Window& f_ui)
 {
 	TRACE("Job: save");
+	syncTagUI(f_ui);
 	return true;
 }
 

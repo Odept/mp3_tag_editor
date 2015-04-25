@@ -9,7 +9,7 @@ class CJob
 public:
 	virtual ~CJob() {}
 
-	virtual bool save() const = 0;
+	virtual bool save(Ui::Window&) = 0;
 
 protected:
 	CJob(QWidget* pParent, const QString& f_path);
@@ -26,7 +26,7 @@ class CJobSingle : public CJob
 public:
 	CJobSingle(QWidget* pParent, const QString& f_path): CJob(pParent, f_path) {}
 
-	virtual bool save() const;
+	virtual bool save(Ui::Window& f_ui);
 
 	void updateTag1UI  (Ui::Window& f_ui) const;
 	void updateTag2UI  (Ui::Window& f_ui) const;
@@ -35,6 +35,16 @@ public:
 private:
 	void trackTag1UI(Ui::Window& f_ui) const;
 	void trackTag2UI(Ui::Window& f_ui) const;
+
+	void syncTagUI (Ui::Window& f_ui);
+	void syncTag1UI(Ui::Window& f_ui);
+	void syncTag2UI(Ui::Window& f_ui);
+
+	template<typename T>
+	void syncControl(const T& f_control,
+					 const QString& f_text,
+					 const QString& f_name,
+					 std::function<bool (const QString&)> f_lambda);
 };
 
 #endif // __JOB_FILE_H__
