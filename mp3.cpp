@@ -19,7 +19,7 @@ public:
 };
 
 
-CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
+CMP3::CMP3(QWidget* f_pParent, const uchar* f_data, unsigned long long f_size):
 	m_tag2Offset(-1),
 	m_mpegOffset(f_size)
 {
@@ -49,7 +49,7 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 							  QString::number(uLastOffset + o, 16).toUpper() +
 							  QString(". The APE tag will be kept, while the frame will be discarded");
 				TRACE(QString("WARNING: ") + msg);
-				CMessageBox::warning(pParent, "Invalid MP3 layout", msg);
+				CMessageBox::warning(f_pParent, "Invalid MP3 layout", msg);
 
 				uint s = m_mpeg->truncate(1);
 				ASSERT(s == 1);
@@ -101,7 +101,7 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 								  QString::number(f_size - CID3v1::getSize(), 16).toUpper() +
 								  QString(" is expected)");
 					TRACE(QString("WARNING: ") + msg);
-					CMessageBox::warning(pParent, "Invalid MP3 layout", msg);
+					CMessageBox::warning(f_pParent, "Invalid MP3 layout", msg);
 				}
 
 				m_tag = QSharedPointer<CID3v1>(pTag);
@@ -164,7 +164,7 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 							  QString::number(i, 16).toUpper() +
 							  QString(". The incomplete frame (%1 bytes) will be discarded").arg(size);
 				TRACE(QString("WARNING: ") + msg);
-				CMessageBox::warning(pParent, "Invalid MP3 layout", msg);
+				CMessageBox::warning(f_pParent, "Invalid MP3 layout", msg);
 
 				//i += size;
 				//size = 0;
@@ -178,15 +178,21 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 		size--;
 	}
 
+	check(f_pParent);
+}
+
+
+void CMP3::check(QWidget* f_pParent)
+{
 	if(m_mpeg.isNull())
 		throw EMP3("Unsupported MP3 file");
 
-	// Ask for the APE and the lyrics tags if present
+	// Ask for an APE and a lyrics tags if present
 	if(!m_ape.isNull())
 	{
 		QString msg("The MP3 contains an APE tag. Should it be kept or be removed?");
 		TRACE(QString("QUESTION: ") + msg);
-		QMessageBox::StandardButton res = CMessageBox::questionTag(pParent, "APE Tag", msg);
+		QMessageBox::StandardButton res = CMessageBox::questionTag(f_pParent, "APE Tag", msg);
 
 		if(res == CMessageBox::TagRemove)
 		{
@@ -201,7 +207,7 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 	{
 		QString msg("The MP3 contains a lyrics tag. Should it be kept or be removed?");
 		TRACE(QString("QUESTION: ") + msg);
-		QMessageBox::StandardButton res = CMessageBox::questionTag(pParent, "APE Tag", msg);
+		QMessageBox::StandardButton res = CMessageBox::questionTag(f_pParent, "Lyrics Tag", msg);
 
 		if(res == CMessageBox::TagRemove)
 		{
@@ -211,16 +217,19 @@ CMP3::CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size):
 			m_ape.clear();
 		}
 	}
+}
 
-/*	if(m_tag.isNull())
-	{
-		TRACE("MP3: create empty ID3v1 tag");
-		m_tag = QSharedPointer<CID3v1>(CID3v1::create());
-	}
-	if(m_tag2.isNull())
-	{
-		TRACE("MP3: create empty ID3v2 tag");
-		m_tag2 = QSharedPointer<CID3v2>(CID3v2::create());
-	}
-*/
+
+void CMP3::createTagV1()
+{
+	TRACE("MP3: create empty ID3v1 tag");
+	ASSERT(m_tag.isNull());
+	m_tag = QSharedPointer<CID3v1>(CID3v1::create());
+}
+
+void CMP3::createTagV2()
+{
+	TRACE("MP3: create empty ID3v2 tag");
+	ASSERT(m_tag2.isNull());
+	m_tag2 = QSharedPointer<CID3v2>(CID3v2::create());
 }

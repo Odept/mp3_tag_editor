@@ -16,12 +16,17 @@ class CMPEGStream;
 class CMP3
 {
 public:
-	CMP3(QWidget* pParent, const uchar* f_data, unsigned long long f_size);
+	CMP3(QWidget* f_pParent, const uchar* f_data, unsigned long long f_size);
 	CMP3() {}
 	virtual ~CMP3() {}
 
-	CID3v1* tagV1() const { return m_tag.data();  }
+	CID3v1* tagV1() const { return m_tag.data(); }
+	void createTagV1();
+	void removeTagV1() { m_tag.clear(); }
+
 	CID3v2* tagV2() const { return m_tag2.data(); }
+	void createTagV2();
+	void removeTagV2() { m_tag2.clear(); }
 	int tag2Offset() const
 	{
 		ASSERT(!m_tag2.isNull());
@@ -30,6 +35,9 @@ public:
 
 	const CMPEGStream& mpeg() const { return *m_mpeg; }
 	uint firstFrameOffset() const { return m_mpegOffset; }
+
+private:
+	void check(QWidget* f_pParent);
 
 private:
 	QSharedPointer<CID3v1> m_tag;
