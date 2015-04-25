@@ -307,7 +307,7 @@ void Window::resetFields(bool f_enabled)
 	ui->comboGenre->setCurrentIndex(-1);
 
 	// Clear ID3v2 fields
-	ui->labelTagOffset->clear();
+	ui->labelTagInfo->clear();
 
 	resetField(*ui->editDisc      , f_enabled);
 	resetField(*ui->editBPM       , f_enabled);
@@ -360,7 +360,7 @@ void Window::onTagSelectionChange(int f_index)
 
 	bool isTabV2 = (f_index != 1);
 
-	ui->labelTagOffset->setVisible(f_index == 2);
+	ui->labelTagInfo->setVisible(f_index);
 
 	ui->comboGenre->setEditable(isTabV2);
 

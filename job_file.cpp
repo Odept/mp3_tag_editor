@@ -159,6 +159,8 @@ void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 
 	if(const CID3v1* pTag = m_mp3.tagV1())
 	{
+		f_ui.labelTagInfo->setText( QString("version 1%1").arg(pTag->isV11() ? ".1" : "") );
+
 		uint uTrack = pTag->isV11() ? pTag->getTrack() : 0;
 		f_ui.editTrack->setText(uTrack ? QString::number(uTrack) : QString());
 
@@ -198,7 +200,7 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 
 	while(const CID3v2* pTag = m_mp3.tagV2())
 	{
-		f_ui.labelTagOffset->setText( QString("@ %1 bytes").arg(m_mp3.tag2Offset()) );
+		f_ui.labelTagInfo->setText( QString("@ %1 bytes").arg(m_mp3.tag2Offset()) );
 
 		f_ui.editTrack		->setText( QString::fromStdString(pTag->getTrack())			);
 		f_ui.editDisc		->setText( QString::fromStdString(pTag->getDisc())			);

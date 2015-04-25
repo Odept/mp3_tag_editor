@@ -557,7 +557,7 @@
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
-        <widget class="QLabel" name="labelTagOffset">
+        <widget class="QLabel" name="labelTagInfo">
          <property name="geometry">
           <rect>
            <x>192</x>
