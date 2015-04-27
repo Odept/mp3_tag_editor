@@ -13,7 +13,7 @@
 #include <QDesktopWidget>
 #include <QScrollBar>
 
-#include "External/inc/genre.h"
+#include "External/inc/id3v2.h" // CID3v2::genre
 
 
 Window::Window(QWidget *parent) :
@@ -38,7 +38,7 @@ Window::Window(QWidget *parent) :
 
 	for(unsigned int i = 0;; i++)
 	{
-		const char* szGenre = CGenre::get(i);
+		const char* szGenre = CID3v2::genre(i);
 		if(!*szGenre)
 			break;
 		QString genre(szGenre);
@@ -363,6 +363,7 @@ void Window::onTagSelectionChange(int f_index)
 	ui->labelTagInfo->setVisible(f_index);
 
 	ui->comboGenre->setEditable(isTabV2);
+	ui->labelBoxGenre->setVisible(isTabV2);
 
 	ui->labelDisc->setVisible(isTabV2);
 	ui->editDisc->setVisible(isTabV2);

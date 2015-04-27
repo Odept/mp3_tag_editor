@@ -213,13 +213,16 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 		f_ui.editAArtist	->setText( QString::fromStdString(pTag->getAlbumArtist())	);
 		f_ui.editComment	->setText( QString::fromStdString(pTag->getComment())		);
 
-		if(pTag->isExtendedGenre())
-			ASSERT(!"Extended Genre");
-		int i = pTag->getGenreIndex();
+		std::string genre = pTag->getGenre();
+		ASSERT(!pTag->isExtendedGenre());
+		int i = CID3v2::genre(genre);
 		if(i == -1)
-			f_ui.comboGenre->setCurrentText( QString::fromStdString(pTag->getGenre()) );
+			f_ui.comboGenre->setCurrentText( QString::fromStdString(genre) );
 		else
+		{
 			f_ui.comboGenre->setCurrentIndex(i);
+			//f_ui.comboGenre->emit currentIndexChanged(i);
+		}
 
 		f_ui.editComposer	->setText( QString::fromStdString(pTag->getComposer())		);
 		f_ui.editPublisher	->setText( QString::fromStdString(pTag->getPublisher())		);

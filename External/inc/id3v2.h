@@ -55,6 +55,9 @@ public:
 	static CID3v2* create();
 	static CID3v2* gen(const uchar* f_pData, unsigned long long f_size, uint* f_puTagSize = NULL);
 
+	static         int genre(const std::string& f_text);
+	static const char* genre(uint f_index);
+
 public:
 	~CID3v2();
 
@@ -62,7 +65,8 @@ public:
 
 #define DECL_GETTER_SETTER(Name) \
 	const std::string& get##Name() const; \
-	void set##Name(const std::string&)
+	bool set##Name(const std::string&); \
+	bool isModified##Name() const
 
 	DECL_GETTER_SETTER(Track);
 	DECL_GETTER_SETTER(Disc);
@@ -74,20 +78,20 @@ public:
 	DECL_GETTER_SETTER(AlbumArtist);
 	DECL_GETTER_SETTER(Year);
 
-	bool				isExtendedGenre()	const;
-	const std::string	getGenre()			const;
-	const std::string&	getGenreEx()		const;
-	int					getGenreIndex()		const;
+	const std::string	getGenre() const;
+	const std::string&	getGenreEx() const;
+	bool				isExtendedGenre() const;
 
-	//DECL_GETTER_SETTER(Comment);
-	const std::string& getComment() const;
+	bool				setGenre(const std::string& f_text);
+	bool				setGenre(uint f_index);
+
+	DECL_GETTER_SETTER(Comment);
 
 	DECL_GETTER_SETTER(Composer);
 	DECL_GETTER_SETTER(Publisher);
 	DECL_GETTER_SETTER(OrigArtist);
 	DECL_GETTER_SETTER(Copyright);
-	//DECL_GETTER_SETTER(URL);
-	const std::string& getURL() const;
+	DECL_GETTER_SETTER(URL);
 	DECL_GETTER_SETTER(Encoded);
 
 	//DECL_GETTER_SETTER(Picture);
@@ -102,19 +106,15 @@ private:
 	CID3v2(const Tag& f_header);
 	CID3v2();
 
-	bool parse(const Tag& f_tag);
+	bool parse (const Tag& f_tag);
 	bool parse3(const Tag& f_tag);
 
 	void cleanup();
 
-	CTextFrame3*			getTextFrame(FrameID f_id)	const;
-	const CGenreFrame3*		getGenreFrame()				const;
-	const CCommentFrame3*	getCommentFrame()			const;
-	const CURLFrame3*		getURLFrame()				const;
-	const CPictureFrame3*	getPictureFrame()			const;
-
-	const std::string& strTextFrame(FrameID f_id) const;
-	void setTextFrame(FrameID f_id, const std::string& f_val);
+	template<typename T>
+	      T*				getFrame(FrameID f_id)	const;
+	const CGenreFrame3*		getGenreFrame()			const;
+	const CPictureFrame3*	getPictureFrame()		const;
 
 private:
 	uint m_version;

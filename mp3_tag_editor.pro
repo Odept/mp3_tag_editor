@@ -21,7 +21,6 @@ SOURCES += main.cpp\
 	mp3.cpp
 
 HEADERS += window.h \
-	External/inc/genre.h \
 	External/inc/id3v1.h \
 	External/inc/id3v2.h \
 	External/inc/mpeg.h \
