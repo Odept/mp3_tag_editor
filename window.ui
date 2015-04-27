@@ -989,7 +989,7 @@
          <rect>
           <x>6</x>
           <y>4</y>
-          <width>784</width>
+          <width>697</width>
           <height>25</height>
          </rect>
         </property>
@@ -1050,6 +1050,19 @@
         </property>
         <property name="placeholderText">
          <string>Drag&amp;Drop an MP3 file here</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="buttonRename">
+        <property name="geometry">
+         <rect>
+          <x>704</x>
+          <y>0</y>
+          <width>89</width>
+          <height>33</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Rename...</string>
         </property>
        </widget>
       </widget>
