@@ -45,6 +45,8 @@ CJob::CJob(QWidget* pParent, const QString& f_path):
 }
 
 // ============================================================================
+#define LAMBDA_SYNC(Name) auto sync##Name = [this](const QString& text)
+
 template<typename T>
 void CJobSingle::syncControl(const T& f_control,
 							 const QString& f_text,
@@ -58,6 +60,8 @@ void CJobSingle::syncControl(const T& f_control,
 	if( !f_lambda(f_text) )
 		TRACE("WARNING: the value seems to be truncated during set");
 }
+#define SYNC_CALL_TEXTEDIT(Name, Text) \
+	syncControl<TextEdit>(*f_ui.edit##Name, Text, #Text, sync##Name)
 
 void CJobSingle::syncTag1UI(Ui::Window& f_ui)
 {
@@ -90,7 +94,7 @@ void CJobSingle::syncTag1UI(Ui::Window& f_ui)
 	else if(!m_mp3.tagV1())
 		m_mp3.createTagV1();
 
-#define LAMBDA_SYNC(Name) auto sync##Name = [this](const QString& text)
+	// Lambdas
 	LAMBDA_SYNC(Track)
 	{
 		bool ok; int t = text.toInt(&ok);
@@ -106,23 +110,112 @@ void CJobSingle::syncTag1UI(Ui::Window& f_ui)
 		int i = text.toInt();
 		return m_mp3.tagV1()->setGenreIndex((i < 0) ? (uint)~0 : i);
 	};
-#undef LAMBDA_SYNC
 
-	syncControl<TextEdit>(*f_ui.editTrack  , track	, "track"	, syncTrack		);
-	syncControl<TextEdit>(*f_ui.editTitle  , title	, "title"	, syncTitle		);
-	syncControl<TextEdit>(*f_ui.editArtist , artist	, "artist"	, syncArtist	);
-	syncControl<TextEdit>(*f_ui.editAlbum  , album	, "album"	, syncAlbum		);
-	syncControl<TextEdit>(*f_ui.editYear   , year	, "year"	, syncYear		);
-	syncControl<TextEdit>(*f_ui.editComment, comment, "comment"	, syncComment	);
+	// Do sync
+	SYNC_CALL_TEXTEDIT(  Track, track	);
+	SYNC_CALL_TEXTEDIT(  Title, title	);
+	SYNC_CALL_TEXTEDIT( Artist, artist	);
+	SYNC_CALL_TEXTEDIT(  Album, album	);
+	SYNC_CALL_TEXTEDIT(   Year, year	);
+	SYNC_CALL_TEXTEDIT(Comment, comment	);
 
 	// Not efficient but OK for now (int->str here and str->int in the lambda)
 	genre = QString::number( f_ui.comboGenre->findText(genre) );
-	syncControl<GenreBox>(*f_ui.comboGenre , genre	, "genre"	, syncGenre		);
+	syncControl<GenreBox>(*f_ui.comboGenre , genre, "genre", syncGenre);
 }
 
 void CJobSingle::syncTag2UI(Ui::Window& f_ui)
 {
 	TRACE("Job: sync ID3v2 UI");
+
+	QString track		= f_ui.editTrack		->toPlainText();
+	QString disc		= f_ui.editDisc			->toPlainText();
+	QString bpm			= f_ui.editBPM			->toPlainText();
+
+	QString title		= f_ui.editTitle		->toPlainText();
+	QString artist		= f_ui.editArtist		->toPlainText();
+	QString album		= f_ui.editAlbum		->toPlainText();
+	QString year		= f_ui.editYear			->toPlainText();
+	QString aartist		= f_ui.editAArtist		->toPlainText();
+	QString comment		= f_ui.editComment		->toPlainText();
+	QString genre		= f_ui.comboGenre		->currentText();
+
+	QString composer	= f_ui.editComposer		->toPlainText();
+	QString publisher	= f_ui.editPublisher	->toPlainText();
+	QString oartist		= f_ui.editOrigArtist	->toPlainText();
+	QString copyright	= f_ui.editCopyright	->toPlainText();
+	QString url			= f_ui.editURL			->toPlainText();
+	QString encoded		= f_ui.editEncoded		->toPlainText();
+
+	if(track	.isEmpty() &&
+	   disc		.isEmpty() &&
+	   bpm		.isEmpty() &&
+
+	   title	.isEmpty() &&
+	   artist	.isEmpty() &&
+	   album	.isEmpty() &&
+	   aartist	.isEmpty() &&
+	   year		.isEmpty() &&
+	   comment	.isEmpty() &&
+	   genre	.isEmpty() &&
+
+	   composer	.isEmpty() &&
+	   publisher.isEmpty() &&
+	   oartist	.isEmpty() &&
+	   copyright.isEmpty() &&
+	   url		.isEmpty() &&
+	   encoded	.isEmpty())
+	{
+		//if(m_mp3.tagV1())
+		//	m_mp3.removeTagV1();
+		//return;
+	}
+	else if(!m_mp3.tagV2())
+		m_mp3.createTagV2();
+
+	// Lambdas
+	LAMBDA_SYNC(     Track)	{ return m_mp3.tagV2()->setTrack		( text.toStdString() );	};
+	LAMBDA_SYNC(      Disc)	{ return m_mp3.tagV2()->setDisc			( text.toStdString() );	};
+	LAMBDA_SYNC(       BPM)	{ return m_mp3.tagV2()->setBPM			( text.toStdString() );	};
+
+	LAMBDA_SYNC(     Title)	{ return m_mp3.tagV2()->setTitle		( text.toStdString() );	};
+	LAMBDA_SYNC(    Artist)	{ return m_mp3.tagV2()->setArtist		( text.toStdString() );	};
+	LAMBDA_SYNC(     Album)	{ return m_mp3.tagV2()->setAlbum		( text.toStdString() );	};
+	LAMBDA_SYNC(   AArtist)	{ return m_mp3.tagV2()->setAlbumArtist	( text.toStdString() );	};
+	LAMBDA_SYNC(      Year)	{ return m_mp3.tagV2()->setYear			( text.toStdString() );	};
+	LAMBDA_SYNC(  Comment)	{ return m_mp3.tagV2()->setComment		( text.toStdString() );	};
+	LAMBDA_SYNC(     Genre)	{ return m_mp3.tagV2()->setGenre		( text.toStdString() );	};
+
+	LAMBDA_SYNC(  Composer)	{ return m_mp3.tagV2()->setComposer		( text.toStdString() );	};
+	LAMBDA_SYNC( Publisher)	{ return m_mp3.tagV2()->setPublisher	( text.toStdString() );	};
+	LAMBDA_SYNC(OrigArtist)	{ return m_mp3.tagV2()->setOrigArtist	( text.toStdString() );	};
+	LAMBDA_SYNC( Copyright)	{ return m_mp3.tagV2()->setCopyright	( text.toStdString() );	};
+	LAMBDA_SYNC(       URL)	{ return m_mp3.tagV2()->setURL			( text.toStdString() );	};
+	LAMBDA_SYNC(   Encoded)	{ return m_mp3.tagV2()->setEncoded		( text.toStdString() );	};
+
+	// Do sync
+	SYNC_CALL_TEXTEDIT(     Track, track	);
+	SYNC_CALL_TEXTEDIT(      Disc, disc		);
+	SYNC_CALL_TEXTEDIT(       BPM, bpm		);
+
+	SYNC_CALL_TEXTEDIT(     Title, title	);
+	SYNC_CALL_TEXTEDIT(    Artist, artist	);
+	SYNC_CALL_TEXTEDIT(     Album, album	);
+	SYNC_CALL_TEXTEDIT(   AArtist, aartist	);
+	SYNC_CALL_TEXTEDIT(      Year, year		);
+	SYNC_CALL_TEXTEDIT(   Comment, comment	);
+
+	syncControl<GenreBox>(*f_ui.comboGenre, genre, "genre", syncGenre);
+
+	SYNC_CALL_TEXTEDIT(  Composer, composer	);
+	SYNC_CALL_TEXTEDIT( Publisher, publisher);
+	SYNC_CALL_TEXTEDIT(OrigArtist, oartist	);
+	SYNC_CALL_TEXTEDIT( Copyright, copyright);
+	SYNC_CALL_TEXTEDIT(       URL, url		);
+	SYNC_CALL_TEXTEDIT(   Encoded, encoded	);
+
+	// Image
+	//const std::vector<uchar>& image = pTag->getPictureData();
 }
 
 void CJobSingle::syncTagUI(Ui::Window& f_ui)
