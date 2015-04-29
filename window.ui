@@ -268,7 +268,7 @@
           <string/>
          </property>
         </widget>
-        <widget class="TextEdit" name="editAArtist">
+        <widget class="TextEdit" name="editAlbumArtist">
          <property name="geometry">
           <rect>
            <x>92</x>
@@ -325,7 +325,7 @@
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
-        <widget class="QLabel" name="labelAArtist">
+        <widget class="QLabel" name="labelAlbumArtist">
          <property name="geometry">
           <rect>
            <x>6</x>

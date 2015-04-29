@@ -137,7 +137,7 @@ void CJobSingle::syncTag2UI(Ui::Window& f_ui)
 	QString artist		= f_ui.editArtist		->toPlainText();
 	QString album		= f_ui.editAlbum		->toPlainText();
 	QString year		= f_ui.editYear			->toPlainText();
-	QString aartist		= f_ui.editAArtist		->toPlainText();
+	QString aartist		= f_ui.editAlbumArtist	->toPlainText();
 	QString comment		= f_ui.editComment		->toPlainText();
 	QString genre		= f_ui.comboGenre		->currentText();
 
@@ -175,45 +175,45 @@ void CJobSingle::syncTag2UI(Ui::Window& f_ui)
 		m_mp3.createTagV2();
 
 	// Lambdas
-	LAMBDA_SYNC(     Track)	{ return m_mp3.tagV2()->setTrack		( text.toStdString() );	};
-	LAMBDA_SYNC(      Disc)	{ return m_mp3.tagV2()->setDisc			( text.toStdString() );	};
-	LAMBDA_SYNC(       BPM)	{ return m_mp3.tagV2()->setBPM			( text.toStdString() );	};
+	LAMBDA_SYNC(      Track)	{ return m_mp3.tagV2()->setTrack		( text.toStdString() );	};
+	LAMBDA_SYNC(       Disc)	{ return m_mp3.tagV2()->setDisc			( text.toStdString() );	};
+	LAMBDA_SYNC(        BPM)	{ return m_mp3.tagV2()->setBPM			( text.toStdString() );	};
 
-	LAMBDA_SYNC(     Title)	{ return m_mp3.tagV2()->setTitle		( text.toStdString() );	};
-	LAMBDA_SYNC(    Artist)	{ return m_mp3.tagV2()->setArtist		( text.toStdString() );	};
-	LAMBDA_SYNC(     Album)	{ return m_mp3.tagV2()->setAlbum		( text.toStdString() );	};
-	LAMBDA_SYNC(   AArtist)	{ return m_mp3.tagV2()->setAlbumArtist	( text.toStdString() );	};
-	LAMBDA_SYNC(      Year)	{ return m_mp3.tagV2()->setYear			( text.toStdString() );	};
-	LAMBDA_SYNC(  Comment)	{ return m_mp3.tagV2()->setComment		( text.toStdString() );	};
-	LAMBDA_SYNC(     Genre)	{ return m_mp3.tagV2()->setGenre		( text.toStdString() );	};
+	LAMBDA_SYNC(      Title)	{ return m_mp3.tagV2()->setTitle		( text.toStdString() );	};
+	LAMBDA_SYNC(     Artist)	{ return m_mp3.tagV2()->setArtist		( text.toStdString() );	};
+	LAMBDA_SYNC(      Album)	{ return m_mp3.tagV2()->setAlbum		( text.toStdString() );	};
+	LAMBDA_SYNC(AlbumArtist)	{ return m_mp3.tagV2()->setAlbumArtist	( text.toStdString() );	};
+	LAMBDA_SYNC(       Year)	{ return m_mp3.tagV2()->setYear			( text.toStdString() );	};
+	LAMBDA_SYNC(    Comment)	{ return m_mp3.tagV2()->setComment		( text.toStdString() );	};
+	LAMBDA_SYNC(      Genre)	{ return m_mp3.tagV2()->setGenre		( text.toStdString() );	};
 
-	LAMBDA_SYNC(  Composer)	{ return m_mp3.tagV2()->setComposer		( text.toStdString() );	};
-	LAMBDA_SYNC( Publisher)	{ return m_mp3.tagV2()->setPublisher	( text.toStdString() );	};
-	LAMBDA_SYNC(OrigArtist)	{ return m_mp3.tagV2()->setOrigArtist	( text.toStdString() );	};
-	LAMBDA_SYNC( Copyright)	{ return m_mp3.tagV2()->setCopyright	( text.toStdString() );	};
-	LAMBDA_SYNC(       URL)	{ return m_mp3.tagV2()->setURL			( text.toStdString() );	};
-	LAMBDA_SYNC(   Encoded)	{ return m_mp3.tagV2()->setEncoded		( text.toStdString() );	};
+	LAMBDA_SYNC(   Composer)	{ return m_mp3.tagV2()->setComposer		( text.toStdString() );	};
+	LAMBDA_SYNC(  Publisher)	{ return m_mp3.tagV2()->setPublisher	( text.toStdString() );	};
+	LAMBDA_SYNC( OrigArtist)	{ return m_mp3.tagV2()->setOrigArtist	( text.toStdString() );	};
+	LAMBDA_SYNC(  Copyright)	{ return m_mp3.tagV2()->setCopyright	( text.toStdString() );	};
+	LAMBDA_SYNC(        URL)	{ return m_mp3.tagV2()->setURL			( text.toStdString() );	};
+	LAMBDA_SYNC(    Encoded)	{ return m_mp3.tagV2()->setEncoded		( text.toStdString() );	};
 
 	// Do sync
-	SYNC_CALL_TEXTEDIT(     Track, track	);
-	SYNC_CALL_TEXTEDIT(      Disc, disc		);
-	SYNC_CALL_TEXTEDIT(       BPM, bpm		);
+	SYNC_CALL_TEXTEDIT(      Track, track		);
+	SYNC_CALL_TEXTEDIT(       Disc, disc		);
+	SYNC_CALL_TEXTEDIT(        BPM, bpm			);
 
-	SYNC_CALL_TEXTEDIT(     Title, title	);
-	SYNC_CALL_TEXTEDIT(    Artist, artist	);
-	SYNC_CALL_TEXTEDIT(     Album, album	);
-	SYNC_CALL_TEXTEDIT(   AArtist, aartist	);
-	SYNC_CALL_TEXTEDIT(      Year, year		);
-	SYNC_CALL_TEXTEDIT(   Comment, comment	);
+	SYNC_CALL_TEXTEDIT(      Title, title		);
+	SYNC_CALL_TEXTEDIT(     Artist, artist		);
+	SYNC_CALL_TEXTEDIT(      Album, album		);
+	SYNC_CALL_TEXTEDIT(AlbumArtist, aartist		);
+	SYNC_CALL_TEXTEDIT(       Year, year		);
+	SYNC_CALL_TEXTEDIT(    Comment, comment		);
 
 	syncControl<GenreBox>(*f_ui.comboGenre, genre, "genre", syncGenre);
 
-	SYNC_CALL_TEXTEDIT(  Composer, composer	);
-	SYNC_CALL_TEXTEDIT( Publisher, publisher);
-	SYNC_CALL_TEXTEDIT(OrigArtist, oartist	);
-	SYNC_CALL_TEXTEDIT( Copyright, copyright);
-	SYNC_CALL_TEXTEDIT(       URL, url		);
-	SYNC_CALL_TEXTEDIT(   Encoded, encoded	);
+	SYNC_CALL_TEXTEDIT(   Composer, composer	);
+	SYNC_CALL_TEXTEDIT(  Publisher, publisher	);
+	SYNC_CALL_TEXTEDIT( OrigArtist, oartist		);
+	SYNC_CALL_TEXTEDIT(  Copyright, copyright	);
+	SYNC_CALL_TEXTEDIT(        URL, url			);
+	SYNC_CALL_TEXTEDIT(    Encoded, encoded		);
 
 	// Image
 	//const std::vector<uchar>& image = pTag->getPictureData();
@@ -310,7 +310,7 @@ void CJobSingle::trackTag2UI(Ui::Window& f_ui) const
 	f_ui.editComment	->trackChanges(true);
 	f_ui.comboGenre		->trackChanges(true);
 
-	f_ui.editAArtist	->trackChanges(true);
+	f_ui.editAlbumArtist->trackChanges(true);
 
 	f_ui.editComposer	->trackChanges(true);
 	f_ui.editPublisher	->trackChanges(true);
@@ -336,7 +336,7 @@ void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 		f_ui.editArtist		->setText( QString::fromStdString(pTag->getArtist())		);
 		f_ui.editAlbum		->setText( QString::fromStdString(pTag->getAlbum())			);
 		f_ui.editYear		->setText( QString::fromStdString(pTag->getYear())			);
-		f_ui.editAArtist	->setText( QString::fromStdString(pTag->getAlbumArtist())	);
+		f_ui.editAlbumArtist->setText( QString::fromStdString(pTag->getAlbumArtist())	);
 		f_ui.editComment	->setText( QString::fromStdString(pTag->getComment())		);
 
 		std::string genre = pTag->getGenre();
