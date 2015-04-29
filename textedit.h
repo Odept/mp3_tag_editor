@@ -1,6 +1,8 @@
 #ifndef __TEXTEDIT_H__
 #define __TEXTEDIT_H__
 
+#include "debug.h"
+
 #include <QTextEdit>
 #include <QComboBox>
 #include <QLabel>
@@ -18,8 +20,13 @@ public:
 	{}
 	void setFrame(QFrame* f_frame) { m_frame = f_frame; }
 
-	void track(bool f_track);
-	bool isChanged() const { return m_changed; }
+	void track(bool f_track, bool f_changed);
+	bool isChanged() const
+	{
+		// Control must be in the tracked state to guarantee valid result
+		ASSERT(m_track);
+		return m_changed;
+	}
 
 public slots:
 	void onChange();
@@ -42,7 +49,7 @@ class TextEdit : public QTextEdit
 public:
 	explicit TextEdit(QWidget* parent = 0);
 
-	void trackChanges(bool f_track) { m_tracker.track(f_track); }
+	void trackChanges(bool f_track, bool f_changed = false) { m_tracker.track(f_track, f_changed); }
 	bool isChanged() const { return m_tracker.isChanged(); }
 
 private:
@@ -59,7 +66,7 @@ public:
 	void setFrame(QFrame* f_frame) { m_tracker.setFrame(f_frame); }
 	void setLabel(QLabel* f_label) { m_label = f_label; }
 
-	void trackChanges(bool f_track) { m_tracker.track(f_track); }
+	void trackChanges(bool f_track, bool f_changed = false) { m_tracker.track(f_track, f_changed); }
 	bool isChanged() const { return m_tracker.isChanged(); }
 
 private slots:

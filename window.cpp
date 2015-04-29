@@ -23,6 +23,7 @@ Window::Window(QWidget *parent) :
 	TRACE("Window: create");
 
 	ui->setupUi(this);
+	m_uTagIndex = ui->comboTag->currentIndex();
 
 	// Tag Selector
 	QStringList tags( QList<QString>() << "Combined" << "ID3v1" << "ID3v2" );
@@ -356,7 +357,7 @@ void Window::updateMenuAndToolBar()
 
 void Window::onTagSelectionChange(int f_index)
 {
-	TRACE( QString("Window: tag selection changed to %1").arg(f_index) );
+	TRACE( QString("Window: tag selection changed from %1 to %2").arg(m_uTagIndex).arg(f_index) );
 
 	bool isTabV2 = (f_index != 1);
 
@@ -382,12 +383,17 @@ void Window::onTagSelectionChange(int f_index)
 
 	ui->boxTagEx->setVisible(isTabV2);
 
-	if(m_job.isNull())
-		return;
+	if(!m_job.isNull())
+	{
+		if((uint)f_index != m_uTagIndex)
+			m_job->sync(*ui, m_uTagIndex);
 
-	resetFields(true);
-	if(isTabV2)
-		m_job->updateTag2UI(*ui);
-	else
-		m_job->updateTag1UI(*ui);
+		resetFields(true);
+		if(isTabV2)
+			m_job->updateTag2UI(*ui);
+		else
+			m_job->updateTag1UI(*ui);
+	}
+
+	m_uTagIndex = f_index;
 }

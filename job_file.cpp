@@ -46,6 +46,8 @@ CJob::CJob(QWidget* pParent, const QString& f_path):
 
 // ============================================================================
 #define LAMBDA_SYNC(Name) auto sync##Name = [this](const QString& text)
+#define SYNC_CALL_TEXTEDIT(Name, Text) \
+	syncControl<TextEdit>(*f_ui.edit##Name, Text, #Text, sync##Name)
 
 template<typename T>
 void CJobSingle::syncControl(const T& f_control,
@@ -60,8 +62,7 @@ void CJobSingle::syncControl(const T& f_control,
 	if( !f_lambda(f_text) )
 		TRACE("WARNING: the value seems to be truncated during set");
 }
-#define SYNC_CALL_TEXTEDIT(Name, Text) \
-	syncControl<TextEdit>(*f_ui.edit##Name, Text, #Text, sync##Name)
+
 
 void CJobSingle::syncTag1UI(Ui::Window& f_ui)
 {
@@ -218,55 +219,81 @@ void CJobSingle::syncTag2UI(Ui::Window& f_ui)
 	//const std::vector<uchar>& image = pTag->getPictureData();
 }
 
-void CJobSingle::syncTagUI(Ui::Window& f_ui)
+void CJobSingle::sync(Ui::Window& f_ui, uint f_uTag)
 {
-	uint uiTag = f_ui.comboTag->currentIndex();
-	if(!uiTag || uiTag == 1)
+	if(!f_uTag || f_uTag == 1)
 		syncTag1UI(f_ui);
-	if(!uiTag || uiTag == 2)
+	if(!f_uTag || f_uTag == 2)
 		syncTag2UI(f_ui);
 }
 
 bool CJobSingle::save(Ui::Window& f_ui)
 {
 	TRACE("Job: save");
-	syncTagUI(f_ui);
+	sync(f_ui, f_ui.comboTag->currentIndex());
 	return true;
 }
 
-
-void CJobSingle::trackTag1UI(Ui::Window& f_ui) const
+// ====================================
+void CJobSingle::updateControl(TextEdit& f_control,
+							   std::function<const QString (const CID3v1&)> f_lambdaGetText,
+							   std::function<bool (const CID3v1&)> f_lambdaIsModified) const
 {
-	f_ui.editTrack	->trackChanges(true);
-	f_ui.editTitle	->trackChanges(true);
-	f_ui.editArtist	->trackChanges(true);
-	f_ui.editAlbum	->trackChanges(true);
-	f_ui.editYear	->trackChanges(true);
-	f_ui.editComment->trackChanges(true);
-	f_ui.comboGenre	->trackChanges(true);
+	const CID3v1& tag = *m_mp3.tagV1();
+	f_control.setText(f_lambdaGetText(tag));
+	f_control.trackChanges(true, f_lambdaIsModified(tag));
 }
+
+#define LAMBDA_NAME_GET_TEXT(Name) getText##Name
+#define LAMBDA_NAME_IS_MODIFIED(Name) isModified##Name
+
+#define LAMBDA_GET_TEXT(Name) \
+	auto LAMBDA_NAME_GET_TEXT(Name) = [](const CID3v1& tag) \
+	{ \
+			return QString(tag.get##Name()); \
+	}
+#define LAMBDA_IS_MODIFIED(Name) \
+	auto LAMBDA_NAME_IS_MODIFIED(Name) = [](const CID3v1& tag) \
+	{ \
+			return tag.isModified##Name(); \
+	}
+
+#define UPDATE_CALL_RAW(Name) \
+	updateControl(*f_ui.edit##Name, LAMBDA_NAME_GET_TEXT(Name), LAMBDA_NAME_IS_MODIFIED(Name))
+
+#define UPDATE_CALL(Name) \
+	LAMBDA_GET_TEXT(Name); \
+	LAMBDA_IS_MODIFIED(Name); \
+	UPDATE_CALL_RAW(Name)
+
 
 void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 {
 	TRACE("Job: update ID3v1 UI");
 
-	if(const CID3v1* pTag = m_mp3.tagV1())
+	const CID3v1* pTag = m_mp3.tagV1();
+	if(!pTag)
+		return;
+
+	f_ui.labelTagInfo->setText( QString("version 1%1").arg(pTag->isV11() ? ".1" : "") );
+
+	// Do update
+	auto LAMBDA_NAME_GET_TEXT(Track) = [](const CID3v1& tag)
 	{
-		f_ui.labelTagInfo->setText( QString("version 1%1").arg(pTag->isV11() ? ".1" : "") );
+		uint uTrack = tag.isV11() ? tag.getTrack() : 0;
+		return uTrack ? QString::number(uTrack) : QString();
+	};
+	LAMBDA_IS_MODIFIED(Track);
 
-		uint uTrack = pTag->isV11() ? pTag->getTrack() : 0;
-		f_ui.editTrack->setText(uTrack ? QString::number(uTrack) : QString());
+	UPDATE_CALL_RAW	(  Track);
+	UPDATE_CALL		(   Year);
+	UPDATE_CALL		(  Title);
+	UPDATE_CALL		( Artist);
+	UPDATE_CALL		(  Album);
+	UPDATE_CALL		(Comment);
 
-		f_ui.editYear	->setText( QString(pTag->getYear())		);
-		f_ui.editTitle	->setText( QString(pTag->getTitle())	);
-		f_ui.editArtist	->setText( QString(pTag->getArtist())	);
-		f_ui.editAlbum	->setText( QString(pTag->getAlbum())	);
-		f_ui.editComment->setText( QString(pTag->getComment())	);
-
-		f_ui.comboGenre->setCurrentIndex( pTag->getGenreIndex() );
-	}
-
-	trackTag1UI(f_ui);
+	f_ui.comboGenre->setCurrentIndex( pTag->getGenreIndex() );
+	f_ui.comboGenre->trackChanges(true, pTag->isModifiedGenre());
 }
 
 
@@ -275,7 +302,13 @@ void CJobSingle::trackTag2UI(Ui::Window& f_ui) const
 	f_ui.editDisc		->trackChanges(true);
 	f_ui.editBPM		->trackChanges(true);
 
-	trackTag1UI(f_ui);
+	f_ui.editTrack		->trackChanges(true);
+	f_ui.editTitle		->trackChanges(true);
+	f_ui.editArtist		->trackChanges(true);
+	f_ui.editAlbum		->trackChanges(true);
+	f_ui.editYear		->trackChanges(true);
+	f_ui.editComment	->trackChanges(true);
+	f_ui.comboGenre		->trackChanges(true);
 
 	f_ui.editAArtist	->trackChanges(true);
 

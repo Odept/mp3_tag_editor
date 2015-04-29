@@ -3,12 +3,19 @@
 #include "debug.h"
 
 
-void ChangeHighlighter::track(bool f_track)
+void ChangeHighlighter::track(bool f_track, bool f_changed)
 {
 	m_changed = false;
 	m_track = f_track;
-	ASSERT(m_frame);
-	m_frame->setStyleSheet( QString() );
+
+	ASSERT(f_track || !f_changed);
+	if(f_changed)
+		onChange();
+	else
+	{
+		ASSERT(m_frame);
+		m_frame->setStyleSheet( QString() );
+	}
 }
 
 void ChangeHighlighter::onChange()

@@ -50,6 +50,8 @@ private slots:
 private:
 	Ui::Window *ui;
 
+	uint m_uTagIndex;
+
 	QSharedPointer<CJobSingle> m_job;
 
 	QGraphicsScene m_graphScene;
