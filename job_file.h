@@ -34,13 +34,6 @@ public:
 	void updateMPEGInfo(Ui::Window& f_ui) const;
 
 private:
-	void trackTag1UI(Ui::Window& f_ui) const;
-	void trackTag2UI(Ui::Window& f_ui) const;
-
-	void updateControl(TextEdit& f_control,
-					   std::function<const QString (const CID3v1&)> f_lambdaGetText,
-					   std::function<bool (const CID3v1&)> f_lambdaIsModified) const;
-
 	void syncTag1UI(Ui::Window& f_ui);
 	void syncTag2UI(Ui::Window& f_ui);
 

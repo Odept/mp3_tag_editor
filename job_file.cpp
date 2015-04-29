@@ -231,40 +231,37 @@ bool CJobSingle::save(Ui::Window& f_ui)
 {
 	TRACE("Job: save");
 	sync(f_ui, f_ui.comboTag->currentIndex());
+	//mp3
 	return true;
 }
 
 // ====================================
-void CJobSingle::updateControl(TextEdit& f_control,
-							   std::function<const QString (const CID3v1&)> f_lambdaGetText,
-							   std::function<bool (const CID3v1&)> f_lambdaIsModified) const
+template<typename T>
+static void updateControl(TextEdit& f_control,
+						  const T& f_tag,
+						  std::function<const QString (const T&)> f_lambdaGetText,
+						  std::function<bool (const T&)> f_lambdaIsModified)
 {
-	const CID3v1& tag = *m_mp3.tagV1();
-	f_control.setText(f_lambdaGetText(tag));
-	f_control.trackChanges(true, f_lambdaIsModified(tag));
+	f_control.setText( f_lambdaGetText(f_tag) );
+	f_control.trackChanges(true, f_lambdaIsModified(f_tag));
 }
 
-#define LAMBDA_NAME_GET_TEXT(Name) getText##Name
-#define LAMBDA_NAME_IS_MODIFIED(Name) isModified##Name
+#define LAMBDA_NAME_GET_TEXT(Name)		getText##Name
+#define LAMBDA_NAME_IS_MODIFIED(Name)	isModified##Name
 
-#define LAMBDA_GET_TEXT(Name) \
-	auto LAMBDA_NAME_GET_TEXT(Name) = [](const CID3v1& tag) \
+#define LAMBDA_IS_MODIFIED(Name, Type) \
+	auto LAMBDA_NAME_IS_MODIFIED(Name) = [](const Type& tag) \
 	{ \
-			return QString(tag.get##Name()); \
-	}
-#define LAMBDA_IS_MODIFIED(Name) \
-	auto LAMBDA_NAME_IS_MODIFIED(Name) = [](const CID3v1& tag) \
-	{ \
-			return tag.isModified##Name(); \
+		return tag.isModified##Name(); \
 	}
 
-#define UPDATE_CALL_RAW(Name) \
-	updateControl(*f_ui.edit##Name, LAMBDA_NAME_GET_TEXT(Name), LAMBDA_NAME_IS_MODIFIED(Name))
+#define UPDATE_CONTROL_RAW(Name, Type) \
+	updateControl<Type>(*f_ui.edit##Name, *pTag, LAMBDA_NAME_GET_TEXT(Name), LAMBDA_NAME_IS_MODIFIED(Name))
 
-#define UPDATE_CALL(Name) \
+#define DEF_UPDATE_CONTROL(Name, Type) \
 	LAMBDA_GET_TEXT(Name); \
-	LAMBDA_IS_MODIFIED(Name); \
-	UPDATE_CALL_RAW(Name)
+	LAMBDA_IS_MODIFIED(Name, Type); \
+	UPDATE_CONTROL_RAW(Name, Type)
 
 
 void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
@@ -278,131 +275,126 @@ void CJobSingle::updateTag1UI(Ui::Window& f_ui) const
 	f_ui.labelTagInfo->setText( QString("version 1%1").arg(pTag->isV11() ? ".1" : "") );
 
 	// Do update
+#define LAMBDA_GET_TEXT(Name) \
+	auto LAMBDA_NAME_GET_TEXT(Name) = [](const CID3v1& tag) \
+	{ \
+		return QString(tag.get##Name()); \
+	}
+#define UPDATE_CONTROL(Name) DEF_UPDATE_CONTROL(Name, CID3v1)
+
 	auto LAMBDA_NAME_GET_TEXT(Track) = [](const CID3v1& tag)
 	{
 		uint uTrack = tag.isV11() ? tag.getTrack() : 0;
 		return uTrack ? QString::number(uTrack) : QString();
 	};
-	LAMBDA_IS_MODIFIED(Track);
+	LAMBDA_IS_MODIFIED(Track, CID3v1);
 
-	UPDATE_CALL_RAW	(  Track);
-	UPDATE_CALL		(   Year);
-	UPDATE_CALL		(  Title);
-	UPDATE_CALL		( Artist);
-	UPDATE_CALL		(  Album);
-	UPDATE_CALL		(Comment);
+	UPDATE_CONTROL_RAW	(  Track, CID3v1);
+	UPDATE_CONTROL		(   Year);
+	UPDATE_CONTROL		(  Title);
+	UPDATE_CONTROL		( Artist);
+	UPDATE_CONTROL		(  Album);
+	UPDATE_CONTROL		(Comment);
 
 	f_ui.comboGenre->setCurrentIndex( pTag->getGenreIndex() );
 	f_ui.comboGenre->trackChanges(true, pTag->isModifiedGenre());
+#undef UPDATE_CONTROL
+#undef LAMBDA_GET_TEXT
 }
 
-
-void CJobSingle::trackTag2UI(Ui::Window& f_ui) const
-{
-	f_ui.editDisc		->trackChanges(true);
-	f_ui.editBPM		->trackChanges(true);
-
-	f_ui.editTrack		->trackChanges(true);
-	f_ui.editTitle		->trackChanges(true);
-	f_ui.editArtist		->trackChanges(true);
-	f_ui.editAlbum		->trackChanges(true);
-	f_ui.editYear		->trackChanges(true);
-	f_ui.editComment	->trackChanges(true);
-	f_ui.comboGenre		->trackChanges(true);
-
-	f_ui.editAlbumArtist->trackChanges(true);
-
-	f_ui.editComposer	->trackChanges(true);
-	f_ui.editPublisher	->trackChanges(true);
-	f_ui.editOrigArtist	->trackChanges(true);
-	f_ui.editCopyright	->trackChanges(true);
-	f_ui.editURL		->trackChanges(true);
-	f_ui.editEncoded	->trackChanges(true);
-}
 
 void CJobSingle::updateTag2UI(Ui::Window& f_ui) const
 {
 	TRACE("Job: update ID3v2 UI");
 
-	while(const CID3v2* pTag = m_mp3.tagV2())
-	{
-		f_ui.labelTagInfo->setText( QString("@ %1 bytes").arg(m_mp3.tag2Offset()) );
+	const CID3v2* pTag = m_mp3.tagV2();
+	if(!pTag)
+		return;
 
-		f_ui.editTrack		->setText( QString::fromStdString(pTag->getTrack())			);
-		f_ui.editDisc		->setText( QString::fromStdString(pTag->getDisc())			);
-		f_ui.editBPM		->setText( QString::fromStdString(pTag->getBPM())			);
+	f_ui.labelTagInfo->setText( QString("@ %1 bytes").arg(m_mp3.tag2Offset()) );
 
-		f_ui.editTitle		->setText( QString::fromStdString(pTag->getTitle())			);
-		f_ui.editArtist		->setText( QString::fromStdString(pTag->getArtist())		);
-		f_ui.editAlbum		->setText( QString::fromStdString(pTag->getAlbum())			);
-		f_ui.editYear		->setText( QString::fromStdString(pTag->getYear())			);
-		f_ui.editAlbumArtist->setText( QString::fromStdString(pTag->getAlbumArtist())	);
-		f_ui.editComment	->setText( QString::fromStdString(pTag->getComment())		);
-
-		std::string genre = pTag->getGenre();
-		ASSERT(!pTag->isExtendedGenre());
-		int i = CID3v2::genre(genre);
-		if(i == -1)
-			f_ui.comboGenre->setCurrentText( QString::fromStdString(genre) );
-		else
-		{
-			f_ui.comboGenre->setCurrentIndex(i);
-			//f_ui.comboGenre->emit currentIndexChanged(i);
-		}
-
-		f_ui.editComposer	->setText( QString::fromStdString(pTag->getComposer())		);
-		f_ui.editPublisher	->setText( QString::fromStdString(pTag->getPublisher())		);
-		f_ui.editOrigArtist	->setText( QString::fromStdString(pTag->getOrigArtist())	);
-		f_ui.editCopyright	->setText( QString::fromStdString(pTag->getCopyright())		);
-		f_ui.editURL		->setText( QString::fromStdString(pTag->getURL())			);
-		f_ui.editEncoded	->setText( QString::fromStdString(pTag->getEncoded())		);
-
-		// Image
-		const std::vector<uchar>& image = pTag->getPictureData();
-		if(image.empty())
-			break;
-
-		QGraphicsScene* pScene = f_ui.graphArt->scene();
-		ASSERT(pScene);
-
-		QPixmap px;
-		if( !px.loadFromData(&image[0], image.size()) )
-		{
-			TRACE("ERROR: failed to load the image data");
-			break;
-		}
-		ASSERT(!px.isNull());
-
-		int cx = f_ui.graphArt->childrenRect().width();
-		int cy = f_ui.graphArt->childrenRect().height();
-		if(px.width() > px.height())
-		{
-			TRACE(QString("Job: scale image %1x%2 -> %3x%4 by width").
-				  arg(px.width()).arg(px.height()).
-				  arg(cx).arg(cy));
-			px = px.scaledToWidth(cx, Qt::SmoothTransformation);
-		}
-		else
-		{
-			TRACE(QString("Job: scale image %1x%2 -> %3x%4 by height").
-				  arg(px.width()).arg(px.height()).
-				  arg(cx).arg(cy));
-			px = px.scaledToHeight(cy, Qt::SmoothTransformation);
-		}
-		ASSERT(!px.isNull());
-
-		ASSERT(pScene->items().isEmpty());
-		pScene->addItem(new QGraphicsPixmapItem(px));
-
-		// Unknown Frames
-		QStandardItemModel* pModel = static_cast<QStandardItemModel*>(f_ui.listFrames->model());
-		ASSERT(pModel);
-		for(auto str: pTag->getUnknownFrames())
-			pModel->appendRow(new QStandardItem(QString::fromStdString(str)));
-		break;
+	// Do update
+#define LAMBDA_GET_TEXT(Name) \
+	auto LAMBDA_NAME_GET_TEXT(Name) = [](const CID3v2& tag) \
+	{ \
+		return QString::fromStdString(tag.get##Name()); \
 	}
+#define UPDATE_CONTROL(Name) DEF_UPDATE_CONTROL(Name, CID3v2)
 
-	trackTag2UI(f_ui);
+	UPDATE_CONTROL(Track);
+	UPDATE_CONTROL(Disc);
+	UPDATE_CONTROL(BPM);
+
+	UPDATE_CONTROL(Title);
+	UPDATE_CONTROL(Artist);
+	UPDATE_CONTROL(Album);
+	UPDATE_CONTROL(Year);
+	UPDATE_CONTROL(AlbumArtist);
+	UPDATE_CONTROL(Comment);
+
+	std::string genre = pTag->getGenre();
+	ASSERT(!pTag->isExtendedGenre());
+	int i = CID3v2::genre(genre);
+	if(i == -1)
+		f_ui.comboGenre->setCurrentText( QString::fromStdString(genre) );
+	else
+	{
+		f_ui.comboGenre->setCurrentIndex(i);
+		//f_ui.comboGenre->emit currentIndexChanged(i);
+	}
+	f_ui.comboGenre->trackChanges(true, pTag->isModifiedGenre());
+
+	UPDATE_CONTROL(Composer);
+	UPDATE_CONTROL(Publisher);
+	UPDATE_CONTROL(OrigArtist);
+	UPDATE_CONTROL(Copyright);
+	UPDATE_CONTROL(URL);
+	UPDATE_CONTROL(Encoded);
+
+	// Image
+	const std::vector<uchar>& image = pTag->getPictureData();
+	if(image.empty())
+		return;
+
+	QGraphicsScene* pScene = f_ui.graphArt->scene();
+	ASSERT(pScene);
+
+	QPixmap px;
+	if( !px.loadFromData(&image[0], image.size()) )
+	{
+		TRACE("ERROR: failed to load the image data");
+		return;
+	}
+	ASSERT(!px.isNull());
+
+	int cx = f_ui.graphArt->childrenRect().width();
+	int cy = f_ui.graphArt->childrenRect().height();
+	if(px.width() > px.height())
+	{
+		TRACE(QString("Job: scale image %1x%2 -> %3x%4 by width").
+			  arg(px.width()).arg(px.height()).
+			  arg(cx).arg(cy));
+		px = px.scaledToWidth(cx, Qt::SmoothTransformation);
+	}
+	else
+	{
+		TRACE(QString("Job: scale image %1x%2 -> %3x%4 by height").
+			  arg(px.width()).arg(px.height()).
+			  arg(cx).arg(cy));
+		px = px.scaledToHeight(cy, Qt::SmoothTransformation);
+	}
+	ASSERT(!px.isNull());
+
+	ASSERT(pScene->items().isEmpty());
+	pScene->addItem(new QGraphicsPixmapItem(px));
+
+	// Unknown Frames
+	QStandardItemModel* pModel = static_cast<QStandardItemModel*>(f_ui.listFrames->model());
+	ASSERT(pModel);
+	for(auto str: pTag->getUnknownFrames())
+		pModel->appendRow(new QStandardItem(QString::fromStdString(str)));
+#undef UPDATE_CONTROL
+#undef LAMBDA_GET_TEXT
 }
 
 
